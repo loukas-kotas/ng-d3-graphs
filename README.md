@@ -25,3 +25,23 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+
+## How to Migrate d3.js graph into a component
+
+### Line
+
+
+1. Add an SVG to draw our line chart on --> create a graph component with an svg element in it
+2. Use the D3 standard margin convetion --> 
+3. Create an x axis --> create an axis component. Get direction as input 'horizontal'.
+4. Create a y axis --> use axis component. direction 'vertical'
+5. Create an x scale --> 
+6. Create a y scale
+7. Create a line generator
+8. Create a random dataset
+9. Create a path object for the line
+10. Bind the data to the path object
+11. Call the line generator on the data-bound path object
+12. Add circles to show each datapoint
+13. Add some basic styling to the chart so its easier on the eyes
