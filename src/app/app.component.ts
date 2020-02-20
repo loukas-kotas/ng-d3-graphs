@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Line } from './line/line.component';
 
 @Component({
   selector: 'app-root',
@@ -8,19 +9,17 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'ng-d3';
 
-  lineData: number[] = [];
+  line: Line;
 
   ngOnInit() {
-    this.lineData = this.getLineData();
+    this.line = this.getLineData();
   }
 
-  getLineData(): number[] {
-    const N = 100;
-    const dataset = [];
-    for (let index = 0; index < N; index++) {
-      dataset.push({y: Math.random() * 1 });
+  getLineData(): Line {
+    return {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September'],
+      data: [65, 59, 80, 81, 56, 55, 40, 10, 25]
     }
-    return dataset;
   }
 
 }
