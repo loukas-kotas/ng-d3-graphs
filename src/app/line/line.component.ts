@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation, AfterContentInit, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import * as d3 from 'd3';
 import { LineService } from './services/line.service';
 
@@ -19,12 +19,6 @@ export interface CircleData {
   cy: any;
   r?: number;
 }
-export interface AxisData {
-  x: number;
-  y: number;
-  label: string;
-}
-
 export interface Axis {
   x?: number;
   y?: number;

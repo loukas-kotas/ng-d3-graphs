@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
-import { Axis, CircleData, LineD3 } from '../line.component';
+import { CircleData, LineD3 } from '../line.component';
 
 export enum AxisDirection { top = 'top', right = 'right', bottom = 'bottom', left = 'left' }
 export type DataType = { x: any, y: any };
