@@ -1,8 +1,9 @@
-import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ViewChild, ElementRef } from '@angular/core';
 import * as d3 from 'd3';
 import { LineService } from './services/line.service';
 import { GraphOptions } from 'src/shared/models/graph-options.interface';
 import { D3Service } from 'src/shared/services/d3.service';
+import { Axis } from 'src/shared/models/axis.interface';
 
 export interface Line {
   labels: any[];
@@ -20,11 +21,6 @@ export interface CircleData {
   cx: any;
   cy: any;
   r?: number;
-}
-export interface Axis {
-  x?: number;
-  y?: number;
-  label: string;
 }
 
 

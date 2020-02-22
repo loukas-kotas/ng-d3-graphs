@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import { CircleData, LineD3 } from '../line.component';
 import { GraphOptions } from 'src/shared/models/graph-options.interface';
+import { D3Service } from 'src/shared/services/d3.service';
 
 export enum AxisDirection { top = 'top', right = 'right', bottom = 'bottom', left = 'left' }
 export type DataType = { x: any, y: any };
 @Injectable()
 export class LineService {
 
-  constructor() { }
+  constructor(
+    private d3Service: D3Service,
+  ) { }
 
   factoryLineGraph(xAxisLabels: string[], data: any[], options: GraphOptions): LineD3 {
     const graph: LineD3 = {
@@ -75,20 +78,7 @@ export class LineService {
   }
 
   factoryAxis(scale: any, direction: AxisDirection, data: CircleData[]): any {
-
-    switch (direction) {
-      case AxisDirection.top:
-        return d3.axisTop(scale);
-      case AxisDirection.right:
-        return d3.axisRight(scale);
-      case AxisDirection.bottom:
-        return d3.axisBottom(scale);
-      case AxisDirection.left:
-        return d3.axisLeft(scale);
-      default:
-        return new Error('No axis Direction Provided');
-    }
-
+    return this.d3Service.factoryAxis(scale, direction);
   }
 
   /**
