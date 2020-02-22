@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BarComponent } from './bar.component';
+import { BarService } from './bar.service';
 
 
 
@@ -8,6 +9,9 @@ import { BarComponent } from './bar.component';
   declarations: [BarComponent],
   imports: [
     CommonModule
+  ],
+  providers: [
+    BarService
   ],
   exports: [BarComponent]
 })
