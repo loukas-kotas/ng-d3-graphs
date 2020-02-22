@@ -3,9 +3,7 @@ import { PieD3, Slice, Label } from './pie.component';
 import { GraphOptions } from 'src/shared/models/graph-options.interface';
 import * as d3 from 'd3';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class PieService {
 
   constructor() { }

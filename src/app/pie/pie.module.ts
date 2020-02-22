@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PieComponent } from './pie.component';
+import { PieService } from './pie.service';
 
 
 
@@ -8,6 +9,9 @@ import { PieComponent } from './pie.component';
   declarations: [PieComponent],
   imports: [
     CommonModule
+  ],
+  providers: [
+    PieService,
   ],
   exports: [PieComponent]
 })
