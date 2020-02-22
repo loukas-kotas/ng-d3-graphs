@@ -27,10 +27,10 @@ export class AppComponent implements OnInit {
 
   getPieData(): Pie {
     return {
-      labels: ['June', 'July', 'August', 'September'],
+      labels: ['A', 'B', 'C', 'D'],
       data: [100, 200, 300, 100],
-      options: {width: 400, height: 400}
-      // backgroundColors: ['black', 'red', 'yellow', 'green']
+      options: {width: 400, height: 400},
+      backgroundColors: ['black', 'red', 'yellow', 'green'],
     };
   }
 
