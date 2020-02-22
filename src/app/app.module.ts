@@ -5,16 +5,18 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LineModule } from './line/line.module';
 import { PieComponent } from './pie/pie.component';
+import { BarModule } from './bar/bar.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PieComponent
+    PieComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     LineModule,
+    BarModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
