@@ -57,13 +57,13 @@ export class BarComponent implements OnInit {
     // TODO: Use d3.js axis for band till axis can be generated with conventional d3 line path gneratatos
     const scaleX = this.d3Service.scaleBandX(this.labels, options.width);
     const axisX = d3.axisBottom(scaleX);
-    d3.select('#x-axis')
+    d3.select('#bar-x-axis')
       .call(axisX);
 
 
     const scaleY = this.d3Service.scaleLinearYRangeRound(this.data, options.height);
     const axisY = d3.axisLeft(scaleY);
-    d3.select('#y-axis')
+    d3.select('#bar-y-axis')
       .call(axisY);
 
 

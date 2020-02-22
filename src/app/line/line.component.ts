@@ -62,7 +62,7 @@ export class LineComponent implements OnInit {
     }
 
     // append line. D3 returns line generator, not path data.
-    d3.select('#svg-container')
+    d3.select('#line-svg-container')
     .append('path')
     .attr('class', 'line') // Assign a class for styling
     .data(
