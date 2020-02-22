@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy, ChangeDetectorRef, ViewChild, ElementRef } from '@angular/core';
 import * as d3 from 'd3';
 import { LineService } from './services/line.service';
+import { GraphOptions } from 'src/shared/models/graph-options.interface';
+import { D3Service } from 'src/shared/services/d3.service';
 
 export interface Line {
   labels: any[];
@@ -25,6 +27,8 @@ export interface Axis {
   label: string;
 }
 
+
+
 @Component({
   selector: 'ng-line',
   templateUrl: './line.component.html',
@@ -37,7 +41,7 @@ export class LineComponent implements OnInit {
 
   @Input() data: any[] = [];
   @Input() labels: string[] = [];
-  @Input() options?: any = {width: 879, height: 804, margin: {top: 50, right: 50, bottom: 50, left: 50}};
+  @Input() options?: GraphOptions = {width: 879, height: 804, margin: {top: 50, right: 50, bottom: 50, left: 50}};
 
   graph: LineD3 = {xAxis: [], yAxis: [], path: '', circleData: []};
 
@@ -45,7 +49,7 @@ export class LineComponent implements OnInit {
 
   constructor(
     private lineService: LineService,
-    private ref: ChangeDetectorRef,
+    private d3Service: D3Service,
   ) { }
 
   ngOnInit() {
@@ -73,7 +77,7 @@ export class LineComponent implements OnInit {
   }
 
   translate(x, y) {
-    return `translate(${x}, ${y})`;
+    return this.d3Service.translate(x, y);
   }
 
   itemCx(item) {

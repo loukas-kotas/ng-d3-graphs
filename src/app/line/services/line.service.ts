@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import { CircleData, LineD3 } from '../line.component';
+import { GraphOptions } from 'src/shared/models/graph-options.interface';
 
 export enum AxisDirection { top = 'top', right = 'right', bottom = 'bottom', left = 'left' }
 export type DataType = { x: any, y: any };
@@ -9,7 +10,7 @@ export class LineService {
 
   constructor() { }
 
-  factoryLineGraph(xAxisLabels: string[], data: any[], options: { width: number, height: number, margin: any }): LineD3 {
+  factoryLineGraph(xAxisLabels: string[], data: any[], options: GraphOptions): LineD3 {
     const graph: LineD3 = {
       xAxis: [],
       yAxis: [],
