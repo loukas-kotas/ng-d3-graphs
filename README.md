@@ -50,3 +50,15 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 11. Call the line generator on the data-bound path object
 12. Add circles to show each datapoint
 13. Add some basic styling to the chart so its easier on the eyes
+
+
+### General Process
+1. Understand the inputs of the graph
+2. Specify the required input into objects
+3. Define a clear API of the graph component
+    * Input
+    * Output (events)
+4. Create an svg element at markup
+5. Provide a unique id to svg to avoid conflicts
+6. Copy-Paste logic from graph into the component
+7. Move pure functions to relevant service
