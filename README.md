@@ -62,3 +62,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 5. Provide a unique id to svg to avoid conflicts
 6. Copy-Paste logic from graph into the component
 7. Move pure functions to relevant service
+
+
+### Axis with Text
+* Use **scaleOrdinal**
+* define **range** at scaleOrdinal by providing an array (e.g **Area Chart**)
