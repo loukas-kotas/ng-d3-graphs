@@ -3,6 +3,8 @@ import { Line } from './line/line.component';
 import { Pie } from './pie/pie.component';
 import { Bar } from './bar/bar.component';
 
+import * as areaData from '../shared/data/area-small';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,11 +16,13 @@ export class AppComponent implements OnInit {
   line: Line;
   pie: Pie;
   bar: Bar;
+  area: any;
 
   ngOnInit() {
     this.line = this.getLineData();
     this.pie = this.getPieData();
     this.bar = this.getBarData();
+    this.area = this.getAreaData();
   }
 
   getLineData(): Line {
@@ -41,8 +45,18 @@ export class AppComponent implements OnInit {
     return {
       labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
       data: [900, 100, 200, 300, 400, 500, 600, 500, 250],
-      options: {width: 960, height: 500, margin: {top: 50, right: 50, bottom: 50, left: 50 }}
+      options: { width: 960, height: 500, margin: { top: 50, right: 50, bottom: 50, left: 50 } }
     };
   }
+
+  getAreaData(): any {
+    const labels = areaData.data.map(d => d.date);
+    const data = areaData.data.map(d => d.value);
+    return {
+      labels,
+      data
+    };
+  }
+
 
 }
