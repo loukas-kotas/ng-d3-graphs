@@ -7,6 +7,7 @@ import { LineModule } from './line/line.module';
 import { BarModule } from './bar/bar.module';
 import { PieModule } from './pie/pie.module';
 import { AreaModule } from './area/area.module';
+import { BandModule } from './band/band.module';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { AreaModule } from './area/area.module';
     PieModule,
     BarModule,
     AreaModule,
+    BandModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
