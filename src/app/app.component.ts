@@ -4,6 +4,8 @@ import { Pie } from './pie/pie.component';
 import { Bar } from './bar/bar.component';
 
 import * as areaData from '../shared/data/area-small';
+import * as bandData from '../shared/data/band';
+import { GraphOptions } from 'src/shared/models/graph-options.interface';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +26,7 @@ export class AppComponent implements OnInit {
     this.pie = this.getPieData();
     this.bar = this.getBarData();
     this.area = this.getAreaData();
+    this.band = this.getBandData();
   }
 
   getLineData(): Line {
@@ -60,11 +63,13 @@ export class AppComponent implements OnInit {
   }
 
   getBandData(): any {
-    const labels = [];
-    const data = [];
+    const labels = bandData.data.map(d => d.date);
+    const data = bandData.data.map(d => { return {high: d.high, low: d.low} });
+    const options: GraphOptions = {width: 300, height: 300, yAxisLabel: '°F'};
     return {
       labels,
-      data
+      data,
+      options
     };
   }
 
