@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
   pie: Pie;
   bar: Bar;
   area: any;
+  band: any;
 
   ngOnInit() {
     this.line = this.getLineData();
@@ -52,6 +53,15 @@ export class AppComponent implements OnInit {
   getAreaData(): any {
     const labels = areaData.data.map(d => d.date);
     const data = areaData.data.map(d => d.value);
+    return {
+      labels,
+      data
+    };
+  }
+
+  getBandData(): any {
+    const labels = [];
+    const data = [];
     return {
       labels,
       data
