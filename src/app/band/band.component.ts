@@ -26,7 +26,7 @@ export class BandComponent implements OnInit {
     console.log(this.labels);
     console.log(this.data);
     this.labelsAndData = this.combineLabelsDataToOne();
-    this.iniGraph();
+    this.initGraph();
   }
 
   private combineLabelsDataToOne(): LabelsAndData[] {
@@ -42,7 +42,7 @@ export class BandComponent implements OnInit {
     return result;
   }
 
-  private iniGraph() {
+  private initGraph() {
 
     const margin = { top: 20, right: 30, bottom: 50, left: 20 },
       height = 500,
