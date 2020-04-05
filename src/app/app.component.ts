@@ -5,8 +5,9 @@ import { Bar } from './bar/bar.component';
 
 import * as areaData from '../shared/data/area-small';
 import * as bandData from '../shared/data/band';
-import { GraphOptions } from 'src/shared/models/graph-options.interface';
+import * as multilineData from '../shared/data/multiline';
 
+import { GraphOptions } from 'src/shared/models/graph-options.interface';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -20,6 +21,7 @@ export class AppComponent implements OnInit {
   bar: Bar;
   area: any;
   band: any;
+  multiline: any;
 
   ngOnInit() {
     this.line = this.getLineData();
@@ -27,6 +29,7 @@ export class AppComponent implements OnInit {
     this.bar = this.getBarData();
     this.area = this.getAreaData();
     this.band = this.getBandData();
+    this.multiline = this.getMultilineData();
   }
 
   getLineData(): Line {
@@ -70,6 +73,18 @@ export class AppComponent implements OnInit {
       labels,
       data,
       options
+    };
+  }
+
+  getMultilineData(): any {
+    const labels = multilineData.data.dates;
+    const data = multilineData.data.series;
+    console.log(multilineData.data.y);
+    const options: GraphOptions = {width: 300, height: 300, yAxisLabel: multilineData.data.y};
+    return {
+      labels,
+      data,
+      options,
     };
   }
 
