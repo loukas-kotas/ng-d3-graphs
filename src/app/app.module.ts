@@ -8,6 +8,7 @@ import { BarModule } from './bar/bar.module';
 import { PieModule } from './pie/pie.module';
 import { AreaModule } from './area/area.module';
 import { BandModule } from './band/band.module';
+import { MultilineModule } from './multiline/multiline.module';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { BandModule } from './band/band.module';
     BarModule,
     AreaModule,
     BandModule,
+    MultilineModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
