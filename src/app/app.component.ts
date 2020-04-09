@@ -6,6 +6,7 @@ import { Bar } from './bar/bar.component';
 import * as areaData from '../shared/data/area-small';
 import * as bandData from '../shared/data/band';
 import * as multilineData from '../shared/data/multiline';
+import * as barData from '../shared/data/bar';
 
 import { GraphOptions } from 'src/shared/models/graph-options.interface';
 @Component({
@@ -49,10 +50,14 @@ export class AppComponent implements OnInit {
   }
 
   getBarData(): Bar {
+    const labels = barData.data.map(d => d.Run);
+    const data = barData.data.map(d => d.Speed);
+    const options: GraphOptions = { width: 600, height: 300, margin: { top: 50, right: 50, bottom: 50, left: 50 }, yAxisLabel: 'Speed' };
+
     return {
-      labels: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-      data: [900, 100, 200, 300, 400, 500, 600, 500, 250],
-      options: { width: 960, height: 500, margin: { top: 50, right: 50, bottom: 50, left: 50 } }
+      labels,
+      data,
+      options
     };
   }
 
