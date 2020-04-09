@@ -45,7 +45,7 @@ export class MultilineComponent implements OnInit {
     const result = [];
     const N = this.data.length;
     for (let index = 0; index < N; index++) {
-      result.push({x: this.labels, y: this.data[index]});
+      result.push({ x: this.labels, y: this.data[index] });
     }
     return result;
   }
@@ -56,8 +56,9 @@ export class MultilineComponent implements OnInit {
 
     const svg = d3.select('#multiline')
       .append('svg')
-      .attr('width', width)
-      .attr('height', height)
+      .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .classed('svg-content', true)
       .append('g');
 
 
@@ -98,17 +99,17 @@ export class MultilineComponent implements OnInit {
 
     const path =
       svg.append('g')
-      .attr('fill', 'none')
-      .attr('stroke', 'steelblue')
-      .attr('stroke-width', 1.5)
-      .attr('stroke-linejoin', 'round')
-      .attr('stroke-linecap', 'round')
-      .selectAll('path')
-      .data(this.data)
-      .join('path')
-      .style('mix-blend-mode', 'multiply')
-      .attr('d', d => line(d.values))
-      .text('this is ');
+        .attr('fill', 'none')
+        .attr('stroke', 'steelblue')
+        .attr('stroke-width', 1.5)
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-linecap', 'round')
+        .selectAll('path')
+        .data(this.data)
+        .join('path')
+        .style('mix-blend-mode', 'multiply')
+        .attr('d', d => line(d.values))
+        .text('this is ');
 
     // TODO: comment in when issue #61 is fixed
     /* svg.call(hover, path, this);
@@ -165,6 +166,8 @@ export class MultilineComponent implements OnInit {
     }
     */
 
+    this.onWindowResize();
+
   }
 
   private getXdomain(): Date[] {
@@ -184,7 +187,7 @@ export class MultilineComponent implements OnInit {
     let minPos = 0;
     for (let i = 1; i < tempValues.length; i++) {
       const element = tempValues[i];
-      if ( element >= minimax) {
+      if (element >= minimax) {
         minPos = i;
         minimax = element;
       }
@@ -192,6 +195,11 @@ export class MultilineComponent implements OnInit {
 
     graphHovered = arr[minPos];
     return graphHovered;
+  }
+
+
+  onWindowResize() {
+
   }
 
 }
