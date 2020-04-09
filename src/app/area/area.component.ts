@@ -98,8 +98,9 @@ export class AreaComponent implements OnInit {
     const svg = d3
       .select('#area')
       .append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
+      .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .classed('svg-content', true)
       .append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
