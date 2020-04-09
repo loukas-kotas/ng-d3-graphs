@@ -44,32 +44,10 @@ export class PieComponent implements OnInit, AfterContentInit {
   graph: PieD3 = {slices: []};
   defaultSliceColor = 'lightblue';
 
-  constructor(
-    private pieService: PieService,
-    private d3Service: D3Service,
-  ) { }
+  constructor() { }
 
   ngOnInit() {
     const options = this.options;
-    this.graph = this.pieService.factoryPieGraph(this.data, this.labels, options, this.radius);
-  }
-
-  ngAfterContentInit() {
-    if (!this.backgroundColors) {
-      this.backgroundColors = this.setDefaultSliceColor();
-    }
-  }
-
-  private setDefaultSliceColor(): string[] {
-    const backgroundColors = [];
-    for (let i = 0; i < this.data.length; i++) {
-      backgroundColors.push(this.defaultSliceColor);
-    }
-    return backgroundColors;
-  }
-
-  translate(x, y): string {
-    return this.d3Service.translate(x, y);
   }
 
   /**
