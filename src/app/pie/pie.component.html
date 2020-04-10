@@ -1,6 +1,1 @@
-<svg id="pie-svg" #pieSvg [attr.width]="options.width" [attr.height]="options.height">
-  <g id="pie-svg-container" [attr.transform]="translate(options.width / 2, options.height / 2)">
-    <path [attr.d]="slice.path" [attr.fill]="backgroundColors[i]" stroke="black" style="stroke-width: 2px; opacity: 0.7;" *ngFor="let slice of graph.slices; let i = index" ></path>
-    <text [attr.transform]="translate(slice.label.x, slice.label.y)" style="text-anchor: middle;" *ngFor="let slice of graph.slices" >{{slice.label.text}}</text>
-  </g>
-</svg>
+<div id="pie" class="svg-container"></div>
