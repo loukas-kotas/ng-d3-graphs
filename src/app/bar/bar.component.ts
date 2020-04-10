@@ -57,11 +57,11 @@ export class BarComponent implements OnInit {
     console.log(this.labels);
     console.log(this.data);
     this.labelsAndData = this.combineLabelsDataToOne();
-    this.initGraph();
+    this.render();
   }
 
 
-  private initGraph() {
+  private render() {
 
     const options = {
       width: this.options.width - this.options.margin.right - this.options.margin.left,
