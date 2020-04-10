@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Line } from './line/line.component';
 import { Pie } from './pie/pie.component';
 import { Bar } from './bar/bar.component';
 
@@ -17,7 +16,7 @@ import { GraphOptions } from 'src/shared/models/graph-options.interface';
 export class AppComponent implements OnInit {
   title = 'ng-d3';
 
-  line: Line;
+  line: any;
   pie: Pie;
   bar: Bar;
   area: any;
@@ -33,7 +32,7 @@ export class AppComponent implements OnInit {
     this.multiline = this.getMultilineData();
   }
 
-  getLineData(): Line {
+  getLineData(): any {
     return {
       labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September'],
       data: [65, 59, 80, 81, 56, 55, 40, 10, 25]
