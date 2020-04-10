@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
-import { AxisDirection } from 'src/app/line/services/line.service';
+
+export enum AxisDirection { top = 'top', right = 'right', bottom = 'bottom', left = 'left' }
 @Injectable({
   providedIn: 'root'
 })
