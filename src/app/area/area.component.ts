@@ -42,10 +42,8 @@ export class AreaComponent implements OnInit {
     const width = 500,
       height = 500,
       padding = { left: 20, right: 20 };
-    const data = ['tang', 'song', 'yuan', 'ming', 'qing'];
-    const axis_length = width - padding.left - padding.right;
-    //d3.scaleImplicit = 200;
-    const svg = d3
+
+      const svg = d3
       .select('body')
       .append('svg')
       .attr('width', width)
@@ -53,15 +51,11 @@ export class AreaComponent implements OnInit {
 
     const xRange = this.getRange(width, padding);
 
-    console.log(xRange);
-
     const scale: ScaleOrdinal<any, any> = d3
       .scaleOrdinal()
       .domain(this.labels)
       .range(xRange);
 
-    //	.unknown(500);
-    console.log(scale('ceshi'));
     const axis = d3.axisBottom(scale).ticks(5);
 
     svg
@@ -90,10 +84,10 @@ export class AreaComponent implements OnInit {
   }
 
   private render() {
-    // let margin = { top: 20, right: 20, bottom: 30, left: 50 }, width = 960 - margin.left - margin.right, height = 500 - margin.top - margin.bottom;
-    const margin = { top: 20, right: 30, bottom: 50, left: 20 },
-      height = 500,
-      width = 800;
+
+    const margin = { top: 20, right: 30, bottom: 50, left: 20 };
+    const height = 500;
+    const width = 800;
 
     const svg = d3
       .select('#area')
@@ -105,7 +99,6 @@ export class AreaComponent implements OnInit {
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
 
-    // x, axis-x
     const xRange = [margin.left];
     const xFactor = width / this.labels.length;
     for (let index = 1; index < this.labels.length; index++) {

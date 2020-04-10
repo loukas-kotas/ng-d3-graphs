@@ -23,8 +23,6 @@ export class BandComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    console.log(this.labels);
-    console.log(this.data);
     this.labelsAndData = this.combineLabelsDataToOne();
     this.render();
   }

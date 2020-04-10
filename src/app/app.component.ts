@@ -84,7 +84,6 @@ export class AppComponent implements OnInit {
   getMultilineData(): any {
     const labels = multilineData.data.dates;
     const data = multilineData.data.series;
-    console.log(multilineData.data);
     const options: GraphOptions = {width: 300, height: 300, yAxisLabel: multilineData.data.y};
     return {
       labels,

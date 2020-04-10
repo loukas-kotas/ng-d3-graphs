@@ -36,11 +36,7 @@ export class LineComponent implements OnInit {
     this.options = { width: 879, height: 804, margin: { top: 50, right: 50, bottom: 50, left: 50 } };
 
     this.labelsAndData = this.combineLabelsDataToOne();
-    console.log(this.labelsAndData);
     this.render();
-    console.log(this.labels);
-    console.log(this.data);
-    console.log(this.options);
   }
 
 
@@ -62,7 +58,7 @@ export class LineComponent implements OnInit {
 
     // careful
     const line = d3.line<any>()
-    .x((d, i) => { console.log('here'); console.log(d); return xScale(d.x); })
+    .x((d, i) => xScale(d.x))
     .y((d) => yScale(d.y))
     .curve(d3.curveMonotoneX);
 
@@ -86,9 +82,9 @@ export class LineComponent implements OnInit {
     .call(d3.axisLeft(yScale));
 
     svg.append('path')
-    .datum(this.labelsAndData) // 10. Binds data to the line
-    .attr('class', 'line') // Assign a class for styling
-    .attr('d', line) // 11. Calls the line generator
+    .datum(this.labelsAndData)
+    .attr('class', 'line')
+    .attr('d', line)
     .attr('transform', `translate(${-margin.left},${0})`);
 
 
