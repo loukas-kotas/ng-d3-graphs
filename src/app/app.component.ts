@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Pie } from './pie/pie.component';
 import { Bar } from './bar/bar.component';
 
+import * as lineData from '../shared/data/line';
 import * as areaData from '../shared/data/area-small';
 import * as bandData from '../shared/data/band';
 import * as multilineData from '../shared/data/multiline';
@@ -34,8 +35,8 @@ export class AppComponent implements OnInit {
 
   getLineData(): any {
     return {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September'],
-      data: [65, 59, 80, 81, 56, 55, 40, 10, 25]
+      labels: lineData.data.map(d => d.date),
+      data: lineData.data.map(d => d.value),
     };
   }
 
@@ -83,7 +84,7 @@ export class AppComponent implements OnInit {
   getMultilineData(): any {
     const labels = multilineData.data.dates;
     const data = multilineData.data.series;
-    console.log(multilineData.data.y);
+    console.log(multilineData.data);
     const options: GraphOptions = {width: 300, height: 300, yAxisLabel: multilineData.data.y};
     return {
       labels,
