@@ -46,7 +46,7 @@ export class PieComponent implements OnInit {
   ngOnInit() {
     const options = this.options;
     this.onBgdColorUndefined();
-    this.initGraph();
+    this.render();
   }
 
   private onBgdColorUndefined() {
@@ -57,7 +57,7 @@ export class PieComponent implements OnInit {
     }
   }
 
-  initGraph() {
+  render() {
     const radius = Math.min(this.options.width, this.options.height) / 2 - this.options.margin.top;
     const svg = d3.select('#pie')
       .append('svg')

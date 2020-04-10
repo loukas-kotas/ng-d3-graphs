@@ -37,14 +37,14 @@ export class LineComponent implements OnInit {
 
     this.labelsAndData = this.combineLabelsDataToOne();
     console.log(this.labelsAndData);
-    this.initGraph();
+    this.render();
     console.log(this.labels);
     console.log(this.data);
     console.log(this.options);
   }
 
 
-  private initGraph(): void {
+  private render(): void {
     const margin = { top: 50, right: 50, bottom: 50, left: 50 };
     const width = this.options.width - margin.left - margin.right;
     const height = this.options.height - margin.top - margin.bottom;

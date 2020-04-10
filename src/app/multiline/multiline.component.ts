@@ -33,7 +33,7 @@ export class MultilineComponent implements OnInit {
   ngOnInit() {
     [this.labels] = this.formatData();
     this.labelsAndData = this.combineLabelsDataToOne();
-    this.initGraph();
+    this.render();
   }
 
   private formatData() {
@@ -50,7 +50,7 @@ export class MultilineComponent implements OnInit {
     return result;
   }
 
-  initGraph(): void {
+  render(): void {
     const margin = { top: 20, right: 30, bottom: 50, left: 20 }, height = 500,
       width = 800;
 
