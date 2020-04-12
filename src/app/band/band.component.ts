@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { GraphOptions } from 'src/shared/models/graph-options.interface';
 import * as d3 from 'd3';
-import { ScaleOrdinal, ScaleTime } from 'd3';
+import { ScaleTime } from 'd3';
 
 interface LabelsAndData {
   x: any;
