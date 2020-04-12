@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import * as d3 from 'd3';
 import { D3Service } from 'src/shared/services/d3.service';
 import { GraphOptions } from 'src/shared/models/graph-options.interface';
-import { ScaleOrdinal, ScaleLinear } from 'd3';
+import { ScaleTime, ScaleOrdinal } from 'd3';
 
 interface LabelsAndData {
   x: any;
@@ -24,9 +24,15 @@ export class AreaComponent implements OnInit {
   constructor(private d3Service: D3Service) { }
 
   ngOnInit() {
+
+    this.formatLabels();
     this.labelsAndData = this.combineLabelsDataToOne(this.labels, this.data);
     this.render();
     // this.demo();
+  }
+
+  private formatLabels() {
+    this.labels = this.labels.map(d => new Date(d));
   }
 
   private combineLabelsDataToOne(labels, data): any[] {
@@ -93,39 +99,20 @@ export class AreaComponent implements OnInit {
       .select('#area')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
       .classed('svg-content', true)
       .append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
+    const xDomain = this.getXdomain();
+    const x: ScaleTime<any, any> = d3
+    .scaleUtc()
+    .domain(xDomain)
+    .range([margin.left, width - margin.right]);
 
-    const xRange = [margin.left];
-    const xFactor = width / this.labels.length;
-    for (let index = 1; index < this.labels.length; index++) {
-      const factor = xFactor * index + margin.left;
-      xRange.push(factor);
-    }
-
-    const x: ScaleOrdinal<any, any> = d3
-      .scaleOrdinal()
-      .domain(this.labels)
-      .range(xRange);
-
-    const xAxis = g =>
-      g
-        .attr('transform', `translate(0,${height - margin.bottom})`)
-        .call(
-          d3
-            .axisBottom(x)
-            .ticks(width / this.labels.length)
-            .tickSizeOuter(0)
-        )
-        .selectAll('text')
-        .attr('y', 0)
-        .attr('x', 9)
-        .attr('dy', '.35em')
-        .attr('transform', 'rotate(45)translate(-3, 10)')
-        .style('text-anchor', 'start');
+    const xAxis = g => g
+    .attr('transform', `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
 
     svg.append('g').call(xAxis);
 
@@ -168,5 +155,11 @@ export class AreaComponent implements OnInit {
 
 
   }
+
+  private getXdomain(): Date[] {
+    const domainExtent = d3.extent(this.labels) as any[];
+    return domainExtent.map(d => new Date(d));
+  }
+
 
 }

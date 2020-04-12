@@ -34,24 +34,6 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## How to Migrate d3.js graph into a component
 
-### Line
-
-
-1. Add an SVG to draw our line chart on --> create a graph component with an svg element in it
-2. Use the D3 standard margin convetion --> 
-3. Create an x axis --> create an axis component. Get direction as input 'horizontal'.
-4. Create a y axis --> use axis component. direction 'vertical'
-5. Create an x scale --> 
-6. Create a y scale
-7. Create a line generator
-8. Create a random dataset
-9. Create a path object for the line
-10. Bind the data to the path object
-11. Call the line generator on the data-bound path object
-12. Add circles to show each datapoint
-13. Add some basic styling to the chart so its easier on the eyes
-
-
 ### General Process
 1. Understand the inputs of the graph
 2. Specify the required input into objects
@@ -60,10 +42,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
     * Output (events)
 4. Create an svg element at markup
 5. Provide a unique id to svg to avoid conflicts
-6. Copy-Paste logic from graph into the component
+6. Transfer logic from graph into the component
 7. Move pure functions to relevant service
-
-
-### Axis with Text
-* Use **scaleOrdinal**
-* define **range** at scaleOrdinal by providing an array (e.g **Area Chart**)

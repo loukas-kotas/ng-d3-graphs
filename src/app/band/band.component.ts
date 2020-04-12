@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { GraphOptions } from 'src/shared/models/graph-options.interface';
 import * as d3 from 'd3';
-import { ScaleOrdinal } from 'd3';
+import { ScaleTime } from 'd3';
 
 interface LabelsAndData {
   x: any;
@@ -16,15 +16,20 @@ interface LabelsAndData {
 export class BandComponent implements OnInit {
   @Input() data: any[] = [];
   @Input() labels: any[] = [];
-  @Input() options: GraphOptions = { width: 300, height: 300, yAxisLabel: ''};
+  @Input() options: GraphOptions = { width: 300, height: 300, yAxisLabel: '' };
   labelsAndData: LabelsAndData[] = [];
 
 
   constructor() { }
 
   ngOnInit() {
+    this.formatLabels();
     this.labelsAndData = this.combineLabelsDataToOne();
     this.render();
+  }
+
+  private formatLabels() {
+    this.labels = this.labels.map(d => new Date(d));
   }
 
   private combineLabelsDataToOne(): LabelsAndData[] {
@@ -50,23 +55,16 @@ export class BandComponent implements OnInit {
       .select('#band')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
       .classed('svg-content', true)
       .append('g')
-      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
 
-    const xRange = [margin.left];
-    const xFactor = width / this.labels.length;
-    for (let index = 1; index < this.labels.length; index++) {
-      const factor = xFactor * index + margin.left;
-      xRange.push(factor);
-    }
-
-    const x: ScaleOrdinal<any, any> = d3
-      .scaleOrdinal()
-      .domain(this.labels)
-      .range(xRange);
+    const x: ScaleTime<any, any> = d3
+      .scaleUtc()
+      .domain(d3.extent(this.labels))
+      .range([margin.left, width - margin.left]);
 
     const y = d3.scaleLinear()
       .domain([d3.min(this.data, d => d.low), d3.max(this.data, d => d.high)]).nice(5)
@@ -75,18 +73,8 @@ export class BandComponent implements OnInit {
     const xAxis = g =>
       g
         .attr('transform', `translate(0,${height - margin.bottom})`)
-        .call(
-          d3
-            .axisBottom(x)
-            .ticks(width / this.labels.length)
-            .tickSizeOuter(0)
-        )
-        .selectAll('text')
-        .attr('y', 0)
-        .attr('x', 9)
-        .attr('dy', '.35em')
-        .attr('transform', 'rotate(45)translate(-3, 10)')
-        .style('text-anchor', 'start');
+        .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
+        .call(g => g.select('.domain').remove());
 
     svg.append('g')
       .call(xAxis);
