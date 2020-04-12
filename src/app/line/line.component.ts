@@ -12,6 +12,10 @@ interface xAxisData {
   value: any;
 }
 
+interface LineOptions extends GraphOptions {
+  ticks?: number;
+}
+
 @Component({
   selector: 'ng-line',
   templateUrl: './line.component.html',
@@ -24,7 +28,7 @@ export class LineComponent implements OnInit {
 
   @Input() data: any[] = [];
   @Input() labels: any[] = [];
-  @Input() options?: GraphOptions = { width: 879, height: 804, margin: { top: 50, right: 50, bottom: 50, left: 50 } };
+  @Input() options?: LineOptions = { width: 879, height: 804, margin: { top: 50, right: 50, bottom: 50, left: 50 }, ticks: 5 };
   labelsAndData: LabelsAndData[] = [];
   xAxisData: xAxisData[] = [];
 
@@ -34,6 +38,10 @@ export class LineComponent implements OnInit {
     const options = { width: this.options.width - 200, height: this.options.height - 100, margin: this.options.margin };
 
     this.options = { width: 879, height: 804, margin: { top: 50, right: 50, bottom: 50, left: 50 } };
+
+    const parseTime = d3.timeParse('%d-%b-%y');
+
+    this.labels = this.labels.map(d => parseTime(d));
 
     this.labelsAndData = this.combineLabelsDataToOne();
     this.render();
@@ -45,52 +53,55 @@ export class LineComponent implements OnInit {
     const width = this.options.width - margin.left - margin.right;
     const height = this.options.height - margin.top - margin.bottom;
 
-    const xDomain = this.getXdomain(this.labels);
-    const xScale = d3.scaleUtc()
-    .domain(xDomain)
-    .range([margin.left, width - margin.right]);
-
-    const yScale = d3.scaleLinear()
-    .domain([0, d3.max(this.data)])
-    .nice()
-
-    .range([height - margin.bottom, margin.top]);
-
-    // careful
-    const line = d3.line<any>()
-    .x((d, i) => xScale(d.x))
-    .y((d) => yScale(d.y))
-    .curve(d3.curveMonotoneX);
-
-
     const svg = d3.select('#line')
-    .append('svg')
-    .attr('preserveAspectRatio', 'xMinYMin meet')
-    .attr('viewBox', `0 0 ${width} ${height}`)
-    .classed('svg-content', true)
-    .append('g')
-    .attr('transform', 'translate(' + margin.left + ', 0)');
+      .append('svg')
+      .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('viewBox', `-${margin.left} 0 ${width + margin.left + margin.right} ${height + margin.top}`)
+      .classed('svg-content', true)
+      .append('g');
 
+    const x = d3.scaleTime().range([0, width]);
+    const y = d3.scaleLinear().range([height, 0]).nice();
+    const valueline = d3.line<any>()
+      .x(d => x(d.x))
+      .y(d => y(d.y));
 
-    const xAxis = g => g
-    .attr('class', 'x axis')
-    .attr('transform', `translate(${-margin.left},${height - margin.bottom})`)
-    .call(d3.axisBottom(xScale));
+    x.domain(d3.extent(this.labels, d => d));
+    y.domain([0, d3.max(this.data, d => d)]);
 
-    const yAxis = g => g
-    .attr('class', 'y axis')
-    .call(d3.axisLeft(yScale));
+    // add the X gridlines
+    svg.append('g')
+      .attr('class', 'grid')
+      .call(this.make_x_gridlines(x)
+        .tickSize(height)
+        // .tickFormat('')
+      );
+
+    // add the Y gridlines
+    svg.append('g')
+      .attr('class', 'grid')
+      .call(this.make_y_gridlines(y)
+        .tickSize(-width)
+        // .tickFormat('')
+      );
 
     svg.append('path')
-    .datum(this.labelsAndData)
-    .attr('class', 'line')
-    .attr('d', line)
-    .attr('transform', `translate(${-margin.left},${0})`);
+      .datum(this.labelsAndData)
+      .attr('class', 'line')
+      .attr('d', valueline);
 
 
-    svg.append('g').call(xAxis);
 
-    svg.append('g').call(yAxis);
+
+    // add the X Axis
+    svg.append('g')
+      .attr('transform', 'translate(0,' + height + ')')
+      .call(d3.axisBottom(x));
+
+    // add the Y Axis
+    svg.append('g')
+      .call(d3.axisLeft(y));
+
 
   }
 
@@ -103,9 +114,16 @@ export class LineComponent implements OnInit {
     return result;
   }
 
-  private getXdomain(labels: any[]): Date[] {
-    const domainExtent = d3.extent(labels) as any[];
-    return domainExtent.map(d => new Date(d));
+  // gridlines in x axis function
+  private make_x_gridlines(x) {
+    return d3.axisBottom(x)
+      .ticks(this.options.ticks);
+  }
+
+  // gridlines in y axis function
+  private make_y_gridlines(y) {
+    return d3.axisLeft(y)
+      .ticks(this.options.ticks);
   }
 
 
