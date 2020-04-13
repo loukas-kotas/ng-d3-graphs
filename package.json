@@ -55,5 +55,11 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "ngPackage": {
+    "lib": {
+      "entryFile": "public-api.ts"
+    },
+    "dest": "dist"
   }
 }
