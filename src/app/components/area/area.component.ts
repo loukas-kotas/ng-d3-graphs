@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as d3 from 'd3';
-import { D3Service } from 'src/shared/services/d3.service';
-import { GraphOptions } from 'src/shared/models/graph-options.interface';
+import { GraphOptions } from '../shared/models/graph-options.interface';
 import { ScaleTime, ScaleOrdinal } from 'd3';
 
 interface LabelsAndData {
@@ -21,7 +20,7 @@ export class AreaComponent implements OnInit {
   // labelsAndData: labelsAndData[] = [];
   labelsAndData: LabelsAndData[] = [];
 
-  constructor(private d3Service: D3Service) { }
+  constructor() { }
 
   ngOnInit() {
 

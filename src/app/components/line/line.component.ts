@@ -6,8 +6,8 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import * as d3 from 'd3';
-import { GraphOptions } from 'src/shared/models/graph-options.interface';
-import { ViewBox } from 'src/shared/models/viewbox.interface';
+import { GraphOptions } from '../shared/models/graph-options.interface';
+import { ViewBox } from '../shared/models/viewbox.interface';
 
 interface LabelsAndData {
   x: any;

@@ -1,8 +1,7 @@
 import { Component, OnInit, Input, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
-import { GraphOptions } from 'src/shared/models/graph-options.interface';
-import { D3Service } from 'src/shared/services/d3.service';
+import { GraphOptions } from '../shared/models/graph-options.interface';
 import * as d3 from 'd3';
-import { Axis } from 'src/shared/models/axis.interface';
+import { Axis } from '../shared/models/axis.interface';
 import { BarService } from './bar.service';
 
 export interface Bar {

@@ -1,7 +1,14 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 @Injectable()
 export class LineService {
 
-  constructor() { }
+  constructor(
+    @Inject('config') private config,
+  ) { }
+
+
+  showConfig() {
+    console.log(this.config);
+  }
 
 }

@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Pie } from './components/pie/pie.component';
 import { Bar } from './components/bar/bar.component';
 
-import * as lineData from '../shared/data/line';
-import * as areaData from '../shared/data/area-small';
-import * as bandData from '../shared/data/band';
-import * as multilineData from '../shared/data/multiline';
-import * as barData from '../shared/data/bar';
+import * as lineData from './components/shared/data/line';
+import * as areaData from './components/shared/data/area-small';
+import * as bandData from './components/shared/data/band';
+import * as multilineData from './components/shared/data/multiline';
+import * as barData from './components/shared/data/bar';
 
-import { GraphOptions } from 'src/shared/models/graph-options.interface';
+import { GraphOptions } from 'ng-d3/shared/models/graph-options.interface';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
