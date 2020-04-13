@@ -1,6 +1,13 @@
-import { Component, OnInit, Input, ViewEncapsulation, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  ViewEncapsulation,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import * as d3 from 'd3';
 import { GraphOptions } from 'src/shared/models/graph-options.interface';
+import { ViewBox } from 'src/shared/models/viewbox.interface';
 
 interface LabelsAndData {
   x: any;
@@ -12,86 +19,116 @@ interface xAxisData {
   value: any;
 }
 
+interface LineOptions extends GraphOptions {
+  ticks?: number;
+}
+
 @Component({
   selector: 'ng-line',
   templateUrl: './line.component.html',
   styleUrls: ['./line.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LineComponent implements OnInit {
-
-
   @Input() data: any[] = [];
   @Input() labels: any[] = [];
-  @Input() options?: GraphOptions = { width: 879, height: 804, margin: { top: 50, right: 50, bottom: 50, left: 50 } };
+  @Input() options?: LineOptions = {
+    width: 879,
+    height: 804,
+    margin: { top: 50, right: 50, bottom: 50, left: 50 },
+    ticks: 5,
+  };
   labelsAndData: LabelsAndData[] = [];
   xAxisData: xAxisData[] = [];
+  viewBox: ViewBox = {
+    minX: -this.options.margin.left,
+    minY: -25,
+    width: this.options.width + this.options.margin.left + this.options.margin.right,
+    height: this.options.height + this.options.margin.top,
+  };
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
-    const options = { width: this.options.width - 200, height: this.options.height - 100, margin: this.options.margin };
+    const options = {
+      width: this.options.width - 200,
+      height: this.options.height - 100,
+      margin: this.options.margin,
+    };
 
-    this.options = { width: 879, height: 804, margin: { top: 50, right: 50, bottom: 50, left: 50 } };
+    this.options = {
+      width: 879,
+      height: 804,
+      margin: { top: 50, right: 50, bottom: 50, left: 50 },
+    };
+
+    const parseTime = d3.timeParse('%d-%b-%y');
+
+    this.labels = this.labels.map((d) => parseTime(d));
 
     this.labelsAndData = this.combineLabelsDataToOne();
     this.render();
   }
 
-
   private render(): void {
     const margin = { top: 50, right: 50, bottom: 50, left: 50 };
     const width = this.options.width - margin.left - margin.right;
     const height = this.options.height - margin.top - margin.bottom;
+    this.viewBox = {
+      minX: -margin.left,
+      minY: -25,
+      width: width + margin.left + margin.right,
+      height: height + margin.top,
+    };
 
-    const xDomain = this.getXdomain(this.labels);
-    const xScale = d3.scaleUtc()
-    .domain(xDomain)
-    .range([margin.left, width - margin.right]);
+    const svg = d3
+      .select('#line')
+      .append('svg')
+      .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr(
+        'viewBox',
+        `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
+      )
+      .classed('svg-content', true)
+      .append('g');
 
-    const yScale = d3.scaleLinear()
-    .domain([0, d3.max(this.data)])
-    .nice()
+    const x = d3.scaleTime().range([0, width]);
+    const y = d3.scaleLinear().range([height, 0]).nice();
+    const valueline = d3
+      .line<any>()
+      .x((d) => x(d.x))
+      .y((d) => y(d.y));
 
-    .range([height - margin.bottom, margin.top]);
+    x.domain(d3.extent(this.labels, (d) => d));
+    y.domain([0, d3.max(this.data, (d) => d)]);
 
-    // careful
-    const line = d3.line<any>()
-    .x((d, i) => xScale(d.x))
-    .y((d) => yScale(d.y))
-    .curve(d3.curveMonotoneX);
+    // add the X gridlines
+    svg.append('g').attr('class', 'grid').call(
+      this.make_x_gridlines(x).tickSize(height)
+      // .tickFormat('')
+    );
 
+    // add the Y gridlines
+    svg.append('g').attr('class', 'grid').call(
+      this.make_y_gridlines(y).tickSize(-width)
+      // .tickFormat('')
+    );
 
-    const svg = d3.select('#line')
-    .append('svg')
-    .attr('preserveAspectRatio', 'xMinYMin meet')
-    .attr('viewBox', `0 0 ${width} ${height}`)
-    .classed('svg-content', true)
-    .append('g')
-    .attr('transform', 'translate(' + margin.left + ', 0)');
+    svg
+      .append('path')
+      .datum(this.labelsAndData)
+      .attr('class', 'line')
+      .attr('d', valueline);
 
+    // add the X Axis
+    svg
+      .append('g')
+      .attr('transform', 'translate(0,' + height + ')')
+      .call(d3.axisBottom(x));
 
-    const xAxis = g => g
-    .attr('class', 'x axis')
-    .attr('transform', `translate(${-margin.left},${height - margin.bottom})`)
-    .call(d3.axisBottom(xScale));
-
-    const yAxis = g => g
-    .attr('class', 'y axis')
-    .call(d3.axisLeft(yScale));
-
-    svg.append('path')
-    .datum(this.labelsAndData)
-    .attr('class', 'line')
-    .attr('d', line)
-    .attr('transform', `translate(${-margin.left},${0})`);
-
-
-    svg.append('g').call(xAxis);
-
-    svg.append('g').call(yAxis);
-
+    // add the Y Axis
+    svg.append('g').call(d3.axisLeft(y));
   }
 
   private combineLabelsDataToOne(): LabelsAndData[] {
@@ -103,11 +140,13 @@ export class LineComponent implements OnInit {
     return result;
   }
 
-  private getXdomain(labels: any[]): Date[] {
-    const domainExtent = d3.extent(labels) as any[];
-    return domainExtent.map(d => new Date(d));
+  // gridlines in x axis function
+  private make_x_gridlines(x) {
+    return d3.axisBottom(x).ticks(this.options.ticks);
   }
 
-
-
+  // gridlines in y axis function
+  private make_y_gridlines(y) {
+    return d3.axisLeft(y).ticks(this.options.ticks);
+  }
 }

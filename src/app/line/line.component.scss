@@ -1,22 +1,42 @@
 /* Style the lines by removing the fill and applying a stroke */
-.line {
-  fill: none;
-  stroke: #ffab00;
-  stroke-width: 3;
-}
+// .line {
+//   fill: none;
+//   stroke: #ffab00;
+//   stroke-width: 3;
+// }
 
-.overlay {
-fill: none;
-pointer-events: all;
-}
+// .overlay {
+// fill: none;
+// pointer-events: all;
+// }
 
 /* Style the dots by assigning a fill and stroke */
-.dot {
-  fill: #ffab00;
-  stroke: #fff;
+// .dot {
+//   fill: #ffab00;
+//   stroke: #fff;
+// }
+
+// .focus circle {
+// fill: none;
+// stroke: steelblue;
+// }
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 2px;
 }
 
-.focus circle {
-fill: none;
-stroke: steelblue;
+.grid line {
+  stroke: lightgrey;
+  stroke-opacity: 0.7;
+  shape-rendering: crispEdges;
+}
+
+.grid path {
+  stroke-width: 0;
+}
+
+.grid text {
+  display: none;
 }
