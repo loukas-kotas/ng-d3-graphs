@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Pie } from './pie/pie.component';
-import { Bar } from './bar/bar.component';
+import { Pie } from './components/pie/pie.component';
+import { Bar } from './components/bar/bar.component';
 
 import * as lineData from '../shared/data/line';
 import * as areaData from '../shared/data/area-small';
