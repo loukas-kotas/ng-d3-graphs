@@ -74,11 +74,11 @@ export class AppComponent implements OnInit {
   getBandData(): any {
     const labels = bandData.data.map(d => d.date);
     const data = bandData.data.map(d => { return {high: d.high, low: d.low} });
-    const options: GraphOptions = {width: 300, height: 300, yAxisLabel: '°F'};
+    // const options: GraphOptions = {width: 300, height: 300, yAxisLabel: '°F', margin: { }};
     return {
       labels,
       data,
-      options
+      // options
     };
   }
 
