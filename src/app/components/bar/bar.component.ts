@@ -3,6 +3,7 @@ import { GraphOptions } from '../shared/models/graph-options.interface';
 import * as d3 from 'd3';
 import { Axis } from '../shared/models/axis.interface';
 import { BarService } from './bar.service';
+import { ViewBox } from '../shared/models/viewbox.interface';
 
 export interface Bar {
   labels: any[];
@@ -34,6 +35,10 @@ interface LabelsAndData {
   y: any;
 }
 
+interface BarOptions extends GraphOptions {
+  ticks?: number;
+}
+
 @Component({
   selector: 'ng-bar',
   templateUrl: './bar.component.html',
@@ -45,10 +50,17 @@ export class BarComponent implements OnInit {
 
   @Input() data: BarData[] = [];
   @Input() labels: any[] = [];
-  @Input() options: GraphOptions = { width: 600, height: 300, margin: { top: 50, right: 50, bottom: 50, left: 50 } };
+  @Input() options: BarOptions = { width: 600, height: 300, margin: { top: 50, right: 50, bottom: 50, left: 50 }, ticks: 5 };
   graph: BarD3 = { xAxis: [], yAxis: [], xAxisPath: '', yAxisPath: '', rectanglesData: [] };
   labelsAndData: LabelsAndData[] = [];
   parseTime = d3.timeParse('%d-%b-%y');
+  viewBox: ViewBox = {
+    minX: -this.options.margin.left,
+    minY: -25,
+    width: this.options.width + this.options.margin.left + this.options.margin.right,
+    height: this.options.height + this.options.margin.top + this.options.margin.bottom,
+  };
+
 
   constructor() { }
 
@@ -69,10 +81,11 @@ export class BarComponent implements OnInit {
     const svg = d3.select('#bar')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', `0 0 ${options.width + options.margin.left + options.margin.right} ${options.height + options.margin.top + options.margin.bottom}`)
+      .attr('viewBox',
+        `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
+      )
       .classed('svg-content', true)
       .append('g')
-      .attr('transform', 'translate(' + this.options.margin.left + ',' + this.options.margin.top + ')');
 
     const x = d3.scaleBand()
       .rangeRound([0, options.width])
@@ -98,6 +111,19 @@ export class BarComponent implements OnInit {
         .attr('dy', '0.71em')
         .attr('text-anchor', 'end')
         .text(this.options.yAxisLabel);
+
+    // add the X gridlines
+    svg.append('g').attr('class', 'grid').call(
+      this.make_x_gridlines(x).tickSize(options.height)
+      // .tickFormat('')
+    );
+
+    // add the Y gridlines
+    svg.append('g').attr('class', 'grid').call(
+      this.make_y_gridlines(y).tickSize(-options.width)
+      // .tickFormat('')
+    );
+
 
     svg.selectAll('.bar')
       .data(this.labelsAndData)
@@ -127,5 +153,15 @@ export class BarComponent implements OnInit {
     }
     return result;
   }
+  // gridlines in x axis function
+  private make_x_gridlines(x) {
+    return d3.axisBottom(x).ticks(this.options.ticks);
+  }
+
+  // gridlines in y axis function
+  private make_y_gridlines(y) {
+    return d3.axisLeft(y).ticks(this.options.ticks);
+  }
+
 
 }
