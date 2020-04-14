@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { GraphOptions } from '../shared/models/graph-options.interface';
-
+import { ViewBox } from '../shared/models/viewbox.interface';
 
 interface LabelsAndData {
   x: any;
@@ -13,20 +13,37 @@ interface MultilineData {
   values: any[];
 }
 
+interface MultilineOptions extends GraphOptions {
+  ticks?: number;
+}
 
 @Component({
   selector: 'ng-multiline',
   templateUrl: './multiline.component.html',
-  styleUrls: ['./multiline.component.scss']
+  styleUrls: ['./multiline.component.scss'],
 })
 export class MultilineComponent implements OnInit {
   @Input() data: MultilineData[] = [];
   @Input() labels: any[] = [];
-  @Input() options: GraphOptions = { width: 300, height: 300, yAxisLabel: '', xAxisLabel: '' };
+  @Input() options: MultilineOptions = {
+    width: 800,
+    height: 500,
+    yAxisLabel: '',
+    xAxisLabel: '',
+    margin: { top: 50, right: 50, bottom: 50, left: 50 },
+  };
   labelsAndData: LabelsAndData[] = [];
   utcParse = d3.utcParse('%Y-%m');
   x: any;
   y: any;
+  viewBox: ViewBox = {
+    minX: -25,
+    minY: -25,
+    width:
+      this.options.width + this.options.margin.left + this.options.margin.right,
+    height: this.options.height + this.options.margin.top + this.options.margin.bottom,
+  };
+
 
   constructor() { }
 
@@ -37,7 +54,7 @@ export class MultilineComponent implements OnInit {
   }
 
   private formatData() {
-    const labels = this.labels.map(d => new Date(d));
+    const labels = this.labels.map((d) => new Date(d));
     return [labels];
   }
 
@@ -51,65 +68,90 @@ export class MultilineComponent implements OnInit {
   }
 
   render(): void {
-    const margin = { top: 20, right: 30, bottom: 50, left: 20 }, height = 500,
-      width = 800;
 
-    const svg = d3.select('#multiline')
+    const svg = d3
+      .select('#multiline')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', `0 0 ${width} ${height}`)
+      .attr('viewBox',
+      `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
+      )
       .classed('svg-content', true)
       .append('g');
 
-
     const xDomain = this.getXdomain();
-    const x = d3.scaleUtc().domain(xDomain).range([
-      margin.left, width - margin.right
-    ]);
+    const x = d3
+      .scaleUtc()
+      .domain(xDomain)
+      // .range([this.options.margin.left, this.options.width - this.options.margin.right]);
+      .range([0, this.options.width]);
 
-    const y = d3.scaleLinear()
-      .domain([0, d3.max(this.data, d => d3.max(d.values))])
+    const y = d3
+      .scaleLinear()
+      .domain([0, d3.max(this.data, (d) => d3.max(d.values))])
       .nice()
-      .range([height - margin.bottom, margin.top]);
+      // .range([this.options.height - this.options.margin.bottom, this.options.margin.top]);
+      .range([this.options.height, 0]);
 
-    const xAxis = g =>
-      g.attr('transform', `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
+    const xAxis = (g) =>
+      g.attr('transform', `translate(0,${this.options.height})`).call(
+        d3
+          .axisBottom(x)
+          .ticks(this.options.width / 80)
+          .tickSizeOuter(0)
+      );
 
-    const yAxis = g => g.attr('transform', `translate(${margin.left},0)`)
-      .call(d3.axisLeft(y))
-      .call(g => g.select('.domain').remove())
-      .call(
-        g => g
-          .select('.tick:last-of-type text')
-          .clone()
-          .attr('x', 3)
-          .attr('text-anchor', 'start')
-          .attr('font-weight', 'bold')
-          .text(this.options.yAxisLabel));
+    const yAxis = (g) =>
+      g
+        .attr('transform', `translate(0,0)`)
+        .call(d3.axisLeft(y))
+        .call((g) => g.select('.domain').remove())
+        .call((g) =>
+          g
+            .select('.tick:last-of-type text')
+            .clone()
+            .attr('x', 3)
+            .attr('text-anchor', 'start')
+            .attr('font-weight', 'bold')
+            .text(this.options.yAxisLabel)
+        );
 
-    const line = d3.line<any>()
-      .defined(d => !isNaN(d))
+    const line = d3
+      .line<any>()
+      .defined((d) => !isNaN(d))
       .x((d, i) => x(this.labels[i]))
-      .y(d => y(d));
+      .y((d) => y(d));
+
+    // add the X gridlines
+    svg.append('g').attr('class', 'grid').call(
+      this.make_x_gridlines(x).tickSize(this.options.height)
+      // .tickFormat('')
+    );
+
+    // add the Y gridlines
+    svg.append('g').attr('class', 'grid').call(
+      this.make_y_gridlines(y).tickSize(-this.options.width)
+      // .tickFormat('')
+    );
+
 
     svg.append('g').call(xAxis);
 
     svg.append('g').call(yAxis);
 
-    const path =
-      svg.append('g')
-        .attr('fill', 'none')
-        .attr('stroke', 'steelblue')
-        .attr('stroke-width', 1.5)
-        .attr('stroke-linejoin', 'round')
-        .attr('stroke-linecap', 'round')
-        .selectAll('path')
-        .data(this.data)
-        .join('path')
-        .style('mix-blend-mode', 'multiply')
-        .attr('d', d => line(d.values))
-        .text('this is ');
+    const path = svg
+      .append('g')
+      .attr('fill', 'none')
+      .attr('stroke', 'steelblue')
+      .attr('stroke-width', 1.5)
+      .attr('stroke-linejoin', 'round')
+      .attr('stroke-linecap', 'round')
+      .selectAll('path')
+      .data(this.data)
+      .join('path')
+      .style('mix-blend-mode', 'multiply')
+      .attr('d', (d) => line(d.values))
+      .text('this is ');
 
     // TODO: comment in when issue #61 is fixed
     /* svg.call(hover, path, this);
@@ -166,13 +208,11 @@ export class MultilineComponent implements OnInit {
     }
     */
 
-    this.onWindowResize();
-
   }
 
   private getXdomain(): Date[] {
     const domainExtent = d3.extent(this.labels) as any[];
-    return domainExtent.map(d => new Date(d));
+    return domainExtent.map((d) => new Date(d));
   }
 
   utcParser(columns: any[]): any {
@@ -180,7 +220,7 @@ export class MultilineComponent implements OnInit {
   }
 
   least(arr: any[], filterFun: any, pos: any, ym: any) {
-    const tempValues = arr.map(d => filterFun(d));
+    const tempValues = arr.map((d) => filterFun(d));
     const minNum = Math.min(...tempValues);
     let graphHovered = undefined;
     let minimax = tempValues[0];
@@ -197,9 +237,15 @@ export class MultilineComponent implements OnInit {
     return graphHovered;
   }
 
-
-  onWindowResize() {
-
+  // gridlines in x axis function
+  private make_x_gridlines(x) {
+    return d3.axisBottom(x).ticks(this.options.ticks);
   }
+
+  // gridlines in y axis function
+  private make_y_gridlines(y) {
+    return d3.axisLeft(y).ticks(this.options.ticks);
+  }
+
 
 }
