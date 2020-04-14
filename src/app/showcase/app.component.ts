@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { Pie } from './pie/pie.component';
-import { Bar } from './bar/bar.component';
 
-import * as lineData from '../shared/data/line';
-import * as areaData from '../shared/data/area-small';
-import * as bandData from '../shared/data/band';
-import * as multilineData from '../shared/data/multiline';
-import * as barData from '../shared/data/bar';
+import * as lineData from './shared/data/line';
+import * as areaData from './shared/data/area-small';
+import * as bandData from './shared/data/band';
+import * as multilineData from './shared/data/multiline';
+import * as barData from './shared/data/bar';
 
-import { GraphOptions } from 'src/shared/models/graph-options.interface';
+import { GraphOptions } from 'ng-d3/shared/models/graph-options.interface';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,8 +16,8 @@ export class AppComponent implements OnInit {
   title = 'ng-d3';
 
   line: any;
-  pie: Pie;
-  bar: Bar;
+  pie: any;
+  bar: any;
   area: any;
   band: any;
   multiline: any;
@@ -43,7 +41,7 @@ export class AppComponent implements OnInit {
     };
   }
 
-  getPieData(): Pie {
+  getPieData(): any {
     return {
       labels: ['A', 'B', 'C', 'D'],
       data: [100, 200, 300, 100],
@@ -52,7 +50,7 @@ export class AppComponent implements OnInit {
     };
   }
 
-  getBarData(): Bar {
+  getBarData(): any {
     const labels = barData.data.map(d => d.Run);
     const data = barData.data.map(d => d.Speed);
     const options: GraphOptions = { width: 600, height: 300, margin: { top: 50, right: 50, bottom: 50, left: 50 }, yAxisLabel: 'Speed' };

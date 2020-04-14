@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import * as d3 from 'd3';
-import { GraphOptions } from 'src/shared/models/graph-options.interface';
+import { GraphOptions } from '../shared/models/graph-options.interface';
 
 
 interface LabelsAndData {

@@ -3,12 +3,12 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LineModule } from './line/line.module';
-import { BarModule } from './bar/bar.module';
-import { PieModule } from './pie/pie.module';
-import { AreaModule } from './area/area.module';
-import { BandModule } from './band/band.module';
-import { MultilineModule } from './multiline/multiline.module';
+import { LineModule } from 'ng-d3';
+import { BarModule } from 'ng-d3';
+import { PieModule } from 'ng-d3';
+import { AreaModule } from 'ng-d3';
+import { BandModule } from 'ng-d3';
+import { MultilineModule } from 'ng-d3';
 
 @NgModule({
   declarations: [

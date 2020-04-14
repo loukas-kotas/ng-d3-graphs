@@ -47,3 +47,6 @@ Thumbs.db
 
 # Logos
 /logos/
+
+# Library
+/src/app/components/dist/

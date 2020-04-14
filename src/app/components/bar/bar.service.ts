@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+
 @Injectable()
-export class LineService {
+export class BarService {
 
   constructor() { }
 
