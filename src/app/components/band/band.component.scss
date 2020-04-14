@@ -1,16 +1,16 @@
 @use './../shared/styles/styles.scss';
 
 
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
+// .axis path,
+// .axis line {
+//   fill: none;
+//   stroke: #000;
+//   shape-rendering: crispEdges;
+// }
 
-.x.axis path {
-  display: none;
-}
+// .x.axis path {
+//   display: none;
+// }
 
 .area {
   fill: steelblue;
