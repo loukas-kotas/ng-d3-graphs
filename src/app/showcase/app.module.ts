@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { LineModule } from 'ng-d3';
 import { BarModule } from 'ng-d3';
 import { PieModule } from 'ng-d3';
-import { AreaModule } from 'ng-d3';
+// import { AreaModule } from 'ng-d3'; TODO: comment in when issue #96 is done.
 import { BandModule } from 'ng-d3';
 import { MultilineModule } from 'ng-d3';
 
@@ -20,7 +20,7 @@ import { MultilineModule } from 'ng-d3';
     LineModule,
     PieModule,
     BarModule,
-    AreaModule,
+    // AreaModule, TODO: comment in when issue #96 is done.
     BandModule,
     MultilineModule,
   ],
