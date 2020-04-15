@@ -1,0 +1,22 @@
+/* tables */
+tr > th {
+  text-align: left;
+  background-color: #dae8ef;
+}
+
+tr > td {
+  text-align: left;
+}
+
+table {
+  width: 100%;
+  display: inline-table !important;
+}
+
+/* list */
+/* ul > li:hover {
+  background-color: #58c191;
+} */
+ul > li a:hover {
+  color: #58c191;
+}

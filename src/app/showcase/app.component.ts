@@ -54,7 +54,7 @@ export class AppComponent implements OnInit {
   getBarData(): any {
     const labels = barData.data.map(d => d.Run);
     const data = barData.data.map(d => d.Speed);
-    const options: GraphOptions = { width: 600, height: 300, margin: { top: 50, right: 50, bottom: 50, left: 50 }, yAxisLabel: 'Speed' };
+    const options: GraphOptions = { width: 600, height: 300, margin: { top: 50, right: 50, bottom: 50, left: 50 }, yAxisLabel: '' };
 
     return {
       labels,
