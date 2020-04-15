@@ -30,7 +30,6 @@ export class AppComponent implements OnInit {
     // this.area = this.getAreaData();
     this.band = this.getBandData();
     this.multiline = this.getMultilineData();
-    console.log(this.multiline);
   }
 
   getLineData(): any {
