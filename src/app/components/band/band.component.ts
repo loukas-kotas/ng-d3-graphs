@@ -116,6 +116,7 @@ export class BandComponent implements OnInit {
     const xAxis = (g) =>
       g
         .attr('transform', `translate(0,${this.options.height})`)
+        .attr('opacity', '0')
         .call(
           d3
             .axisBottom(x)
@@ -126,6 +127,7 @@ export class BandComponent implements OnInit {
     const yAxis = (g) =>
       g
         .attr('transform', `translate(${0},0)`)
+        .attr('opacity', '0')
         .call(d3.axisLeft(y))
         .call((g) => g.select('.domain').remove())
         .call((g) =>
