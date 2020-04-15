@@ -1,15 +1,13 @@
 # Pie
 
-# Bar
-
-Import the **BarModule** from **ng-d3** 
+Import the **PieModule** from **ng-d3** 
 
 ```javascript
-import { BarModule } from 'ng-d3';
+import { PieModule } from 'ng-d3';
 //...
 @NgModule({
 imports: [
-  BarModule,
+  PieModule,
 ]});
 ```
 
