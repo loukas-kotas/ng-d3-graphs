@@ -26,7 +26,8 @@ export class AppComponent implements OnInit {
     this.line = this.getLineData();
     this.pie = this.getPieData();
     this.bar = this.getBarData();
-    this.area = this.getAreaData();
+    // TODO: comment in when issue #96 is done.
+    // this.area = this.getAreaData();
     this.band = this.getBandData();
     this.multiline = this.getMultilineData();
   }
@@ -62,14 +63,15 @@ export class AppComponent implements OnInit {
     };
   }
 
-  getAreaData(): any {
-    const labels = areaData.data.map(d => d.date);
-    const data = areaData.data.map(d => d.value);
-    return {
-      labels,
-      data
-    };
-  }
+  // TODO: comment in when issue #96 is done.
+  // getAreaData(): any {
+  //   const labels = areaData.data.map(d => d.date);
+  //   const data = areaData.data.map(d => d.value);
+  //   return {
+  //     labels,
+  //     data
+  //   };
+  // }
 
   getBandData(): any {
     const labels = bandData.data.map(d => d.date);

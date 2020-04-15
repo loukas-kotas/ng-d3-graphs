@@ -2,10 +2,15 @@ import { Component, OnInit, Input } from '@angular/core';
 import * as d3 from 'd3';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import { ScaleTime, ScaleOrdinal } from 'd3';
+import { ViewBox } from '../shared/models/viewbox.interface';
 
 interface LabelsAndData {
   x: any;
   y: any;
+}
+
+interface AreaOptions extends GraphOptions {
+  ticks?: number;
 }
 @Component({
   selector: 'ng-area',
@@ -15,23 +20,33 @@ interface LabelsAndData {
 export class AreaComponent implements OnInit {
   @Input() data: any[] = [];
   @Input() labels: any[] = [];
-  @Input() options: GraphOptions = { width: 300, height: 300 };
+  @Input() options: AreaOptions = {
+    width: 300,
+    height: 300,
+    margin: { top: 50, right: 50, bottom: 50, left: 50 },
+    ticks: 5,
+  };
   formatx = d3.timeFormat('%Y-%m-%d %H:%M:%S');
-  // labelsAndData: labelsAndData[] = [];
   labelsAndData: LabelsAndData[] = [];
+  viewBox: ViewBox = {
+    minX: -this.options.margin.left,
+    minY: -25,
+    width: (this.options.width + this.options.margin.left + this.options.margin.right),
+    height: (this.options.height + this.options.margin.top),
+  };
+
 
   constructor() { }
 
   ngOnInit() {
 
-    this.formatLabels();
+    this.labels = this.formatLabels(this.labels);
     this.labelsAndData = this.combineLabelsDataToOne(this.labels, this.data);
     this.render();
-    // this.demo();
   }
 
-  private formatLabels() {
-    this.labels = this.labels.map(d => new Date(d));
+  private formatLabels(labels) {
+    return labels.map(d => new Date(d));
   }
 
   private combineLabelsDataToOne(labels, data): any[] {
@@ -43,88 +58,40 @@ export class AreaComponent implements OnInit {
     return labelsAndData;
   }
 
-  private demo() {
-    const width = 500,
-      height = 500,
-      padding = { left: 20, right: 20 };
-
-      const svg = d3
-      .select('body')
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height);
-
-    const xRange = this.getRange(width, padding);
-
-    const scale: ScaleOrdinal<any, any> = d3
-      .scaleOrdinal()
-      .domain(this.labels)
-      .range(xRange);
-
-    const axis = d3.axisBottom(scale).ticks(5);
-
-    svg
-      .append('g')
-      .call(axis)
-      .attr(
-        'transform',
-        'translate(' + padding.left + ',' + (height - 100) + ')'
-      )
-      .selectAll('text')
-      .attr('y', 0)
-      .attr('x', 9)
-      .attr('dy', '.35em')
-      .attr('transform', 'rotate(45)translate(-3, 10)')
-      .style('text-anchor', 'start');
-  }
-
-  private getRange(width: number, padding: { left: number; right: number }) {
-    const xStep = width / this.labels.length;
-    const xRange = [];
-    for (let index = 0; index < width - padding.left; index++) {
-      const xRangePoint = index * xStep;
-      xRange.push(xRangePoint);
-    }
-    return xRange;
-  }
-
   private render() {
 
-    const margin = { top: 20, right: 30, bottom: 50, left: 20 };
-    const height = 500;
-    const width = 800;
+    // const width = this.options.width - this.options.margin.left - this.options.margin.right;
+    // const height = this.options.height - this.options.margin.top - this.options.margin.bottom;
 
     const svg = d3
       .select('#area')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+      .attr('viewBox', `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
+      )
       .classed('svg-content', true)
-      .append('g')
-      .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+      .append('g');
 
     const xDomain = this.getXdomain();
     const x: ScaleTime<any, any> = d3
-    .scaleUtc()
-    .domain(xDomain)
-    .range([margin.left, width - margin.right]);
+      .scaleUtc()
+      .domain(xDomain)
+      .range([0, this.options.width]);
 
     const xAxis = g => g
-    .attr('transform', `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
+      .attr('transform', `translate(${0},${this.options.height})`)
+      .call(d3.axisBottom(x));
 
-    svg.append('g').call(xAxis);
-
-    // y, y-axis
     const y = d3
       .scaleLinear()
-      .domain([0, d3.max(this.data)])
+      .domain([d3.min(this.data, (d) => d), d3.max(this.data, (d) => d)])
       .nice()
-      .range([height - margin.bottom, margin.top]);
+      // .range([height - this.options.margin.bottom, this.options.margin.top]);
+      .range([this.options.height, 0]);
 
     const yAxis = g =>
       g
-        .attr('transform', `translate(${margin.left},0)`)
+        .attr('transform', `translate(${0},${0})`)
         .call(d3.axisLeft(y))
         .call(g => g.select('.domain').remove())
         .call(g =>
@@ -136,21 +103,36 @@ export class AreaComponent implements OnInit {
             .text(this.data)
         );
 
-    svg.append('g')
-    .call(yAxis);
-
     // area
     const curve: any = d3.curveLinear;
     const area = d3.area<LabelsAndData>()
-    .curve(curve)
-    .x(d => x(d.x))
-    .y0(y(0))
-    .y1(d => y(d.y));
+      .curve(curve)
+      .x(d => x(d.x))
+      .y0(y(0))
+      .y1(d => y(d.y));
+
+
+    svg.append('g').call(xAxis);
+    svg.append('g').call(yAxis);
+
+    // add the X gridlines
+    svg.append('g').attr('class', 'grid').call(
+      this.make_x_gridlines(x).tickSize(this.options.height)
+      // .tickFormat('')
+    );
+
+    // add the Y gridlines
+    svg.append('g').attr('class', 'grid').call(
+      this.make_y_gridlines(y).tickSize(-this.options.width)
+      // .tickFormat('')
+    );
+
 
     svg.append('path')
-    .datum(this.labelsAndData)
-    .attr('fill', 'steelblue')
-    .attr('d', area);
+      .datum(this.labelsAndData)
+      .attr('fill', 'steelblue')
+      .attr('d', area);
+      // .attr('transform', `translate(${this.options.margin.left},${this.options.margin.top})`);
 
 
   }
@@ -159,6 +141,17 @@ export class AreaComponent implements OnInit {
     const domainExtent = d3.extent(this.labels) as any[];
     return domainExtent.map(d => new Date(d));
   }
+
+  // gridlines in x axis function
+  private make_x_gridlines(x) {
+    return d3.axisBottom(x).ticks(this.options.ticks);
+  }
+
+  // gridlines in y axis function
+  private make_y_gridlines(y) {
+    return d3.axisLeft(y).ticks(this.options.ticks);
+  }
+
 
 
 }
