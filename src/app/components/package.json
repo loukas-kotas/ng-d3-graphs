@@ -1,6 +1,6 @@
 {
   "name": "ng-d3",
-  "version": "0.0.0",
+  "version": "0.2.2",
   "author": {
     "name": "Loukas Kotas",
     "url": "https://loukaskotas.com"
@@ -8,7 +8,8 @@
   "license": "MIT",
   "peerDependencies": {
     "@angular/core": "~8.2.14",
-    "@angular/common": "~8.2.14"
+    "@angular/common": "~8.2.14",
+    "d3": "^5.15.0"
   },
   "ngPackage": {
     "$schema": "./node_modules/ng-packagr/ng-package.schema.json",
@@ -16,5 +17,7 @@
       "entryFile": "public_api.ts"
     },
     "dest": "dist"
-  }
+  },
+  "private": false,
+  "publishConfig":{"registry":"http://localhost:4873"}
 }

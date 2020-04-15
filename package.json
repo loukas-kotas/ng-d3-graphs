@@ -11,8 +11,14 @@
     "ng-packagr": "ng-packagr",
     "build:lib": "ng-packagr -p src/app/components/package.json",
     "build:docs": "docsify init ./docs",
-    "start:docs": "docsify serve ./docs"
+    "start:docs": "docsify serve ./docs",
+    "publish:local": "npm run build:lib && npm publish src/app/components/dist --registry http://localhost:4873"
   },
+  "author": {
+    "name": "Loukas Kotas",
+    "url": "https://loukaskotas.com"
+  },
+  "license": "MIT",
   "private": true,
   "dependencies": {
     "@angular/animations": "~8.2.14",
@@ -68,5 +74,6 @@
       "entryFile": "public-api.ts"
     },
     "dest": "dist"
-  }
+  },
+  "publishConfig":{"registry":"http://localhost:4873"}
 }
