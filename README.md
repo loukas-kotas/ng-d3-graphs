@@ -1,3 +1,5 @@
+<img src="./assets/ng-d3.png" alt="drawing" width="250" height="250"/>
+
 # NgD3
 
 ## Getting Started
