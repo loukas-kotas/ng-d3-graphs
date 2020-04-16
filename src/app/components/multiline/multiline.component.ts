@@ -96,7 +96,7 @@ export class MultilineComponent implements OnInit {
     const xAxis = (g) =>
       g
       .attr('transform', `translate(0,${this.options.height})`)
-      .attr('opacity', '1').call(
+      .attr('opacity', '0').call(
         d3
           .axisBottom(x)
           .ticks(this.options.width / 80)
@@ -106,7 +106,7 @@ export class MultilineComponent implements OnInit {
     const yAxis = (g) =>
       g
         .attr('transform', `translate(${-5},0)`)
-        .attr('opacity', '1')
+        .attr('opacity', '0')
         .call(d3.axisLeft(y))
         .call((g) => g.select('.domain').remove())
         .call((g) =>
