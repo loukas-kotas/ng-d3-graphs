@@ -12,7 +12,8 @@
     "build:lib": "ng-packagr -p src/app/components/package.json",
     "build:docs": "docsify init ./docs",
     "start:docs": "docsify serve ./docs",
-    "publish:local": "npm run build:lib && npm publish src/app/components/dist --registry http://localhost:4873"
+    "publish:local": "npm run build:lib && npm publish src/app/components/dist --registry http://localhost:4873",
+    "publish:remote": "npm run build:lib && npm publish src/app/components/dist"
   },
   "author": {
     "name": "Loukas Kotas",

@@ -1,9 +1,12 @@
 {
   "name": "ng-d3",
-  "version": "0.2.2",
+  "version": "0.1.0",
   "author": {
     "name": "Loukas Kotas",
     "url": "https://loukaskotas.com"
+  },
+  "repository": {
+    "url": "https://github.com/loukas-kotas/ng-d3/"
   },
   "license": "MIT",
   "peerDependencies": {
@@ -19,5 +22,14 @@
     "dest": "dist"
   },
   "private": false,
-  "publishConfig":{"registry":"http://localhost:4873"}
+  "keywords": [
+    "d3",
+    "ng",
+    "angular",
+    "d3.js",
+    "ng-d3",
+    "graph",
+    "svg",
+    "canvas"
+  ]
 }
