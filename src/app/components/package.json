@@ -2,8 +2,7 @@
   "name": "ng-d3-graphs",
   "version": "0.1.0",
   "author": {
-    "name": "Loukas Kotas",
-    "url": "https://loukaskotas.com"
+    "name": "Loukas Kotas"
   },
   "bugs": {
     "url": "https://github.com/loukas-kotas/ng-d3-graphs/issues/"
