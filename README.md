@@ -4,8 +4,19 @@
 
 * [Documentation](https://loukaskotas.com/ng-d3-graphs/#/index)
 
+## Quick Start
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.20.
+## Install Dependencies
+
+```bash
+npm install d3@5.15.0
+```
+
+## Install ng-d3-graphs
+
+```bash
+npm install ng-d3-graphs
+```
 
 ## Git Workflow
 
