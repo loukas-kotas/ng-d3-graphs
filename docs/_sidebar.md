@@ -5,7 +5,7 @@
 * [Index](/index.md)
 * [Getting Started](/getting-started.md)
   * [Install Dependencies](/getting-started?id=install-dependenciesmd)
-  * [Install ng-d3](/getting-started?id=install-ng-d3)
+  * [Install ng-d3-graphs](/getting-started?id=install-ng-d3-graphs)
 * [Components](/components.md)
   * [Line](/line.md)
   * [Bar](/bar.md)

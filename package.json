@@ -1,9 +1,10 @@
 {
-  "name": "ng-d3-app",
+  "name": "ng-d3-graphs",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:dev": "npm run build:lib && ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -13,7 +14,7 @@
     "build:docs": "docsify init ./docs",
     "start:docs": "docsify serve ./docs",
     "publish:local": "npm run build:lib && npm publish src/app/components/dist --registry http://localhost:4873",
-    "publish:remote": "npm run build:lib && npm publish src/app/components/dist"
+    "publish:remote": "npm run build:lib && npm publish src/app/components/dist --access=public"
   },
   "author": {
     "name": "Loukas Kotas",
@@ -30,7 +31,7 @@
     "@angular/platform-browser": "~8.2.14",
     "@angular/platform-browser-dynamic": "~8.2.14",
     "@angular/router": "~8.2.14",
-    "ng-d3": "file:src/app/components/dist",
+    "ng-d3-graphs": "file:src/app/components/dist",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
@@ -75,6 +76,5 @@
       "entryFile": "public-api.ts"
     },
     "dest": "dist"
-  },
-  "publishConfig":{"registry":"http://localhost:4873"}
+  }
 }

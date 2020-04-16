@@ -1,9 +1,9 @@
 # Band
 
-Import the **BandModule** from **ng-d3** 
+Import the **BandModule** from **ng-d3-graphs** 
 
 ```javascript
-import { BandModule } from 'ng-d3';
+import { BandModule } from 'ng-d3-graphs';
 //...
 @NgModule({
 imports: [
@@ -30,4 +30,4 @@ imports: [
 <ng-band [labels]="labels" [data]="data"></ng-band>
 ```
 
-<img src='./images/ng-d3-band.png' style='width:100%;height:400px;'>
+<img src='./images/ng-d3-graphs-band.png' style='width:100%;height:400px;'>

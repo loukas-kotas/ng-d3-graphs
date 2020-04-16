@@ -1,9 +1,9 @@
 # Pie
 
-Import the **PieModule** from **ng-d3** 
+Import the **PieModule** from **ng-d3-graphs** 
 
 ```javascript
-import { PieModule } from 'ng-d3';
+import { PieModule } from 'ng-d3-graphs';
 //...
 @NgModule({
 imports: [
@@ -35,4 +35,4 @@ const backgroundColors = ['black', 'red', 'yellow', 'green'];
 <ng-pie [labels]="labels" [data]="data"></ng-pie>
 ```
 
-<img src="./images/ng-d3-pie.png" style="width:50%;height:400px;">
+<img src="./images/ng-d3-graphs-pie.png" style="width:50%;height:400px;">

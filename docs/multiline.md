@@ -1,9 +1,9 @@
 # Multiline
 
-Import the **MultilineModule** from **ng-d3** 
+Import the **MultilineModule** from **ng-d3-graphs** 
 
 ```javascript
-import { MultilineModule } from 'ng-d3';
+import { MultilineModule } from 'ng-d3-graphs';
 //...
 @NgModule({
 imports: [
@@ -30,4 +30,4 @@ imports: [
 <ng-multiline [labels]="labels" [data]="data"></ng-multiline>
 ```
 
-<img src='./images/ng-d3-multiline.png' style='width:100%;height:400px;'>
+<img src='./images/ng-d3-graphs-multiline.png' style='width:100%;height:400px;'>

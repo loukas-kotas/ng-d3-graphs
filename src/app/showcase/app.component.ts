@@ -6,14 +6,14 @@ import * as bandData from './shared/data/band';
 import * as multilineData from './shared/data/multiline';
 import * as barData from './shared/data/bar';
 
-import { GraphOptions } from 'ng-d3/shared/models/graph-options.interface';
+import { GraphOptions } from 'ng-d3-graphs/shared/models/graph-options.interface';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  title = 'ng-d3';
+  title = 'ng-d3-graphs';
 
   line: any;
   pie: any;

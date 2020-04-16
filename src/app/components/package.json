@@ -1,12 +1,15 @@
 {
-  "name": "ng-d3",
+  "name": "ng-d3-graphs",
   "version": "0.1.0",
   "author": {
     "name": "Loukas Kotas",
     "url": "https://loukaskotas.com"
   },
+  "bugs": {
+    "url": "https://github.com/loukas-kotas/ng-d3-graphs/issues/"
+  },
   "repository": {
-    "url": "https://github.com/loukas-kotas/ng-d3/"
+    "url": "https://github.com/loukas-kotas/ng-d3-graphs/"
   },
   "license": "MIT",
   "peerDependencies": {

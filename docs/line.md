@@ -1,9 +1,9 @@
 # Line
 
-Import the **LineModule** from **ng-d3** 
+Import the **LineModule** from **ng-d3-graphs** 
 
 ```javascript
-import { LineModule } from 'ng-d3';
+import { LineModule } from 'ng-d3-graphs';
 //...
 @NgModule({
 imports: [
@@ -32,4 +32,4 @@ const data = [ 58.13, 53.98, 67, 89.7, 99, 130.28, 166.7, 234.98, 345.44, 443.34
 <ng-line [labels]="labels" [data]="data"></ng-line>
 ```
 
-<img src="./images/ng-d3-line.png" style="width:100%;height:400px;">
+<img src="./images/ng-d3-graphs-line.png" style="width:100%;height:400px;">

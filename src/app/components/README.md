@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-* [Documentation](https://loukaskotas.com/ng-d3/#/index)
+* [Documentation](https://loukaskotas.com/ng-d3-graphs/#/index)
 
 
 ## How to Migrate d3.js graph into a component

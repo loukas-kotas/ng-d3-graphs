@@ -1,9 +1,9 @@
 # Bar
 
-Import the **BarModule** from **ng-d3** 
+Import the **BarModule** from **ng-d3-graphs** 
 
 ```javascript
-import { BarModule } from 'ng-d3';
+import { BarModule } from 'ng-d3-graphs';
 //...
 @NgModule({
 imports: [
@@ -32,4 +32,4 @@ const data = [ '850', '740', '900', '1070', '930', '850', '950', '980', '980', '
 <ng-bar [labels]="labels" [data]="data"></ng-bar>
 ```
 
-<img src="./images/ng-d3-bar.png" style="width:100%;height:400px;">
+<img src="./images/ng-d3-graphs-bar.png" style="width:100%;height:400px;">
