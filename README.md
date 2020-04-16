@@ -1,5 +1,10 @@
 # NgD3
 
+## Getting Started
+
+* [Documentation](https://loukaskotas.com/ng-d3-graphs/#/index)
+
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.20.
 
 ## Git Workflow
