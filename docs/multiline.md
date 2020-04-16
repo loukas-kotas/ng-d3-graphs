@@ -30,4 +30,4 @@ imports: [
 <ng-multiline [labels]="labels" [data]="data"></ng-multiline>
 ```
 
-<img src='./images/ng-d3-graphs-multiline.png' style='width:100%;height:400px;'>
+<img src="./images/ng-d3-graphs-multiline.png" style="width:100%;height:400px;">
