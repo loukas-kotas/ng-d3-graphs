@@ -1,27 +1,24 @@
 <img src="./assets/ng-d3.png" alt="drawing" width="250" height="250"/>
 
-# NgD3
+# NgD3-Graphs
 
 ## Getting Started
 
 * [Documentation](https://loukaskotas.com/ng-d3-graphs/#/index)
 
+## Quick Start
 
-## How to Migrate d3.js graph into a component
+## Install Dependencies
 
-### General Process
-1. Understand the inputs of the graph
-2. Specify the required input into objects
-3. Define a clear API of the graph component
-    * Input
-    * Output (events)
-4. Create an svg element at markup
-5. Provide a unique id to svg to avoid conflicts
-6. Transfer logic from graph into the component
-7. Move pure functions to relevant service
+```bash
+npm install d3@5.15.0
+```
 
+## Install ng-d3-graphs
 
-
+```bash
+npm install ng-d3-graphs
+```
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
