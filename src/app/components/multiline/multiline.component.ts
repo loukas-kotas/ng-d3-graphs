@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import { ViewBox } from '../shared/models/viewbox.interface';
@@ -21,6 +21,7 @@ interface MultilineOptions extends GraphOptions {
   selector: 'ng-multiline',
   templateUrl: './multiline.component.html',
   styleUrls: ['./multiline.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class MultilineComponent implements OnInit {
   @Input() data: MultilineData[] = [];
@@ -96,7 +97,7 @@ export class MultilineComponent implements OnInit {
     const xAxis = (g) =>
       g
       .attr('transform', `translate(0,${this.options.height})`)
-      .attr('opacity', '0').call(
+      .attr('opacity', '1').call(
         d3
           .axisBottom(x)
           .ticks(this.options.width / 80)
@@ -106,7 +107,7 @@ export class MultilineComponent implements OnInit {
     const yAxis = (g) =>
       g
         .attr('transform', `translate(${-5},0)`)
-        .attr('opacity', '0')
+        .attr('opacity', '1')
         .call(d3.axisLeft(y))
         .call((g) => g.select('.domain').remove())
         .call((g) =>

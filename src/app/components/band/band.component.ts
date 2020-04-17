@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import * as d3 from 'd3';
 import { ScaleTime } from 'd3';
@@ -18,6 +18,7 @@ interface BandOptions extends GraphOptions {
   selector: 'ng-band',
   templateUrl: './band.component.html',
   styleUrls: ['./band.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class BandComponent implements OnInit {
   @Input() data: any[] = [];
@@ -116,7 +117,7 @@ export class BandComponent implements OnInit {
     const xAxis = (g) =>
       g
         .attr('transform', `translate(0,${this.options.height})`)
-        .attr('opacity', '0')
+        .attr('opacity', '1')
         .call(
           d3
             .axisBottom(x)
@@ -127,7 +128,7 @@ export class BandComponent implements OnInit {
     const yAxis = (g) =>
       g
         .attr('transform', `translate(${0},0)`)
-        .attr('opacity', '0')
+        .attr('opacity', '1')
         .call(d3.axisLeft(y))
         .call((g) => g.select('.domain').remove())
         .call((g) =>
