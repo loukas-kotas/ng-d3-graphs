@@ -1,7 +1,9 @@
-import { Component, Input, OnInit, ViewEncapsulation, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation, ElementRef, HostListener } from '@angular/core';
 import * as d3 from 'd3';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import { ViewBox } from '../shared/models/viewbox.interface';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 interface LabelsAndData {
   x: any;
@@ -13,8 +15,8 @@ interface MultilineData {
   values: any[];
 }
 
-interface MultilineOptions extends GraphOptions {
-  ticks?: number;
+export interface MultilineOptions extends GraphOptions {
+  gridTicks?: number;
 }
 
 @Component({
@@ -34,12 +36,18 @@ export class MultilineComponent implements OnInit {
   viewBox: ViewBox = {} as ViewBox;
 
   _options: MultilineOptions = {
-    width: 800,
-    height: 500,
+    width: 879,
+    height: 804,
     yAxisLabel: '',
     xAxisLabel: '',
     margin: { top: 50, right: 50, bottom: 50, left: 50 },
   };
+
+  onResize$ = new Subject<void>();
+  @HostListener('window:resize')
+  onResize(): void {
+    this.onResize$.next();
+  }
 
 
   constructor(
@@ -49,15 +57,17 @@ export class MultilineComponent implements OnInit {
   ngOnInit() {
     this.options = {...this._options, ...this.options};
     this.viewBox = {
-      minX: -25,
+      minX: -this.options.margin.left,
       minY: -25,
-      width:
-        Number(this.options.width) + Number(this.options.margin.left) + Number(this.options.margin.right),
-      height:
-        Number(this.options.height) + Number(this.options.margin.top) + Number(this.options.margin.bottom),
+      width: this.options.width + this.options.margin.left + this.options.margin.right,
+      height: this.options.height + this.options.margin.top,
     };
+
     [this.labels] = this.formatData();
     this.labelsAndData = this.combineLabelsDataToOne();
+
+    this.onResizeEvent();
+
     this.render();
   }
 
@@ -77,52 +87,63 @@ export class MultilineComponent implements OnInit {
 
   render(): void {
 
+    const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
+    const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
+
+    const width = this.options.width - this.options.margin.left - this.options.margin.right;
+    const height = this.options.height - this.options.margin.top - this.options.margin.bottom;
+
+    this.viewBox = {
+      minX: -this.options.margin.left,
+      minY: -25,
+      width: this.options.width,
+      height: this.options.height - this.options.margin.top,
+    };
+
+
     const svg = d3
       .select(this.container.nativeElement)
       .select('div')
       .append('svg')
-      .attr('preserveAspectRatio', 'xMinYMin meet')
+      // TODO: delete me
+      // .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('width', currentWidth)
+      .attr('height', currentHeight)
       .attr('viewBox',
       `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
       )
-      .classed('svg-container', true)
+      .classed('svg-content', true)
       .append('g');
 
     const xDomain = this.getXdomain();
     const x = d3
-      .scaleUtc()
+      .scaleTime()
       .domain(xDomain)
-      // .range([this.options.margin.left, this.options.width - this.options.margin.right]);
-      .range([0, this.options.width]);
+      .range([0, width]);
 
     const y = d3
       .scaleLinear()
       .domain([0, d3.max(this.data, (d) => d3.max(d.values))])
-      .nice()
-      // .range([this.options.height - this.options.margin.bottom, this.options.margin.top]);
-      .range([this.options.height, 0]);
+      .range([height, 0])
+      .nice();
 
     const xAxis = (g) =>
       g
-      .attr('transform', `translate(0,${this.options.height})`)
-      .attr('opacity', '1').call(
+      .attr('transform', `translate(0,${height})`)
+      .call(
         d3
           .axisBottom(x)
-          .ticks(this.options.width / 80)
-          .tickSizeOuter(0)
       );
 
     const yAxis = (g) =>
       g
-        .attr('transform', `translate(${-5},0)`)
-        .attr('opacity', '1')
         .call(d3.axisLeft(y))
-        .call((g) => g.select('.domain').remove())
         .call((g) =>
           g
             .select('.tick:last-of-type text')
             .clone()
-            .attr('x', 3)
+            .attr('x', -5)
+            .attr('y', -10)
             .attr('text-anchor', 'start')
             .attr('font-weight', 'bold')
             .text(this.options.yAxisLabel)
@@ -136,13 +157,13 @@ export class MultilineComponent implements OnInit {
 
     // add the X gridlines
     svg.append('g').attr('class', 'grid').call(
-      this.make_x_gridlines(x).tickSize(this.options.height)
+      this.make_x_gridlines(x).tickSize(height)
       // .tickFormat('')
     );
 
     // add the Y gridlines
     svg.append('g').attr('class', 'grid').call(
-      this.make_y_gridlines(y).tickSize(-this.options.width)
+      this.make_y_gridlines(y).tickSize(-width)
       // .tickFormat('')
     );
 
@@ -223,12 +244,8 @@ export class MultilineComponent implements OnInit {
   }
 
   private getXdomain(): Date[] {
-    const domainExtent = d3.extent(this.labels) as any[];
+    const domainExtent = d3.extent(this.labels, (d) => d) as any[];
     return domainExtent.map((d) => new Date(d));
-  }
-
-  utcParser(columns: any[]): any {
-    return columns.map(this.utcParse);
   }
 
   least(arr: any[], filterFun: any, pos: any, ym: any) {
@@ -251,13 +268,25 @@ export class MultilineComponent implements OnInit {
 
   // gridlines in x axis function
   private make_x_gridlines(x) {
-    return d3.axisBottom(x).ticks(this.options.ticks);
+    return d3.axisBottom(x).ticks(this.options.gridTicks);
   }
 
   // gridlines in y axis function
   private make_y_gridlines(y) {
-    return d3.axisLeft(y).ticks(this.options.ticks);
+    return d3.axisLeft(y).ticks(this.options.gridTicks);
   }
+
+  onResizeEvent(): void {
+    this.onResize$
+    .pipe(
+      debounceTime(200)
+    ).subscribe(() => {
+      const svgExist = d3.select(this.container.nativeElement).select('svg');
+      if (svgExist) { svgExist.remove(); }
+      this.render();
+    });
+  }
+
 
 
 }
