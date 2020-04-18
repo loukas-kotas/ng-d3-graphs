@@ -1,8 +1,50 @@
 <!-- // TODO: comment in when issue #96 is done.
 <ng-area [labels]="area.labels" [data]=area.data></ng-area> -->
-<ng-line [labels]="line.labels" [data]="line.data" [options]="line.options"></ng-line>
-<ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors"></ng-pie>
-<ng-bar [labels]="bar.labels" [data]="bar.data" [options]="bar.options"></ng-bar>
-<ng-band [labels]="band.labels" [data]="band.data"></ng-band>
-<ng-multiline [labels]="multiline.labels" [data]="multiline.data"></ng-multiline>
+
+<div class="container">
+  <div class="line-container">
+    <ng-line [labels]="line.labels" [data]="line.data" [options]="line.options"></ng-line>
+  </div>
+  <div class="line-container">
+    <ng-line [labels]="line.labels" [data]="line.data" [options]="line.options"></ng-line>
+  </div>
+</div>
+
+<div class="container">
+  <div class="line-container">
+    <ng-bar [labels]="bar.labels" [data]="bar.data" [options]="bar.options"></ng-bar>
+  </div>
+  <div class="line-container">
+    <ng-bar [labels]="bar.labels" [data]="bar.data" [options]="bar.options"></ng-bar>
+  </div>
+</div>
+
+<div class="container">
+  <div class="line-container">
+    <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="{width: '300'}"></ng-pie>
+  </div>
+  <div class="line-container">
+    <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="{width: '300'}"></ng-pie>
+  </div>
+</div>
+
+<div class="container">
+  <div class="line-container">
+    <ng-multiline [labels]="multiline.labels" [data]="multiline.data"></ng-multiline>
+  </div>
+  <div class="line-container">
+    <ng-multiline [labels]="multiline.labels" [data]="multiline.data"></ng-multiline>
+  </div>
+</div>
+
+<!-- NOTE: comment in when #108 is resolved -->
+<!-- <div class="container">
+  <div class="line-container">
+    <ng-band [labels]="band.labels" [data]="band.data"></ng-band>
+  </div>
+  <div class="line-container">
+    <ng-band [labels]="band.labels" [data]="band.data"></ng-band>
+  </div>
+</div> -->
+
 <router-outlet></router-outlet>

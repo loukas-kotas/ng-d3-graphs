@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, ChangeDetectionStrategy, ViewEncapsulation, ElementRef } from '@angular/core';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import * as d3 from 'd3';
 import { Axis } from '../shared/models/axis.interface';
@@ -44,64 +44,89 @@ interface BarOptions extends GraphOptions {
   templateUrl: './bar.component.html',
   styleUrls: ['./bar.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarComponent implements OnInit {
-
   @Input() data: BarData[] = [];
   @Input() labels: any[] = [];
-  @Input() options: BarOptions = { width: 600, height: 300, margin: { top: 50, right: 50, bottom: 50, left: 50 }, ticks: 5 };
-  graph: BarD3 = { xAxis: [], yAxis: [], xAxisPath: '', yAxisPath: '', rectanglesData: [] };
+  @Input() options?: BarOptions = {} as BarOptions;
+  graph: BarD3 = {
+    xAxis: [],
+    yAxis: [],
+    xAxisPath: '',
+    yAxisPath: '',
+    rectanglesData: [],
+  };
   labelsAndData: LabelsAndData[] = [];
   parseTime = d3.timeParse('%d-%b-%y');
-  viewBox: ViewBox = {
-    minX: -this.options.margin.left,
-    minY: -25,
-    width: this.options.width + this.options.margin.left + this.options.margin.right,
-    height: this.options.height + this.options.margin.top + this.options.margin.bottom,
+
+  private _options: BarOptions = {
+    width: 600,
+    height: 300,
+    margin: { top: 50, right: 50, bottom: 50, left: 50 },
+    ticks: 5,
   };
 
+  viewBox: ViewBox = {} as ViewBox;
 
-  constructor() { }
+
+  constructor(private container: ElementRef) {}
 
   ngOnInit() {
+    this.options =  {...this._options, ...this.options};
+    this.viewBox = {
+      minX: -this.options.margin.left,
+      minY: -25,
+      width:
+        this.options.width + this.options.margin.left + this.options.margin.right,
+      height:
+        this.options.height +
+        this.options.margin.top +
+        this.options.margin.bottom,
+    };
     this.labelsAndData = this.combineLabelsDataToOne();
     this.render();
   }
 
-
   private render() {
-
     const options = {
-      width: this.options.width - this.options.margin.right - this.options.margin.left,
+      width:
+        this.options.width -
+        this.options.margin.right -
+        this.options.margin.left,
       height: this.options.height + this.options.margin.top,
-      margin: this.options.margin
+      margin: this.options.margin,
     };
 
-    const svg = d3.select('#bar')
+    const svg = d3
+      .select(this.container.nativeElement)
+      .select('div')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox',
+      .attr(
+        'viewBox',
         `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
       )
       .classed('svg-content', true)
-      .append('g')
+      .append('g');
 
-    const x = d3.scaleBand()
+    const x = d3
+      .scaleBand()
       .rangeRound([0, options.width])
       .padding(0.1)
       .domain(this.labels);
 
-    const y = d3.scaleLinear()
+    const y = d3
+      .scaleLinear()
       .rangeRound([options.height, 0])
-      .domain([0, Math.max(...this.data.map(d => Number(d)))]);
+      .domain([0, Math.max(...this.data.map((d) => Number(d)))]);
 
-    const xAxis = g =>
+    const xAxis = (g) =>
       g
         .call(d3.axisBottom(x))
         .attr('transform', 'translate(0,' + options.height + ')');
 
-    const yAxis = g =>
+    const yAxis = (g) =>
       g
         .call(d3.axisLeft(y))
         .append('text')
@@ -124,10 +149,11 @@ export class BarComponent implements OnInit {
       // .tickFormat('')
     );
 
-
-    svg.selectAll('.bar')
+    svg
+      .selectAll('.bar')
       .data(this.labelsAndData)
-      .enter().append('rect')
+      .enter()
+      .append('rect')
       .attr('class', 'bar')
       .attr('x', (d) => {
         return x(d.x);
@@ -162,6 +188,4 @@ export class BarComponent implements OnInit {
   private make_y_gridlines(y) {
     return d3.axisLeft(y).ticks(this.options.ticks);
   }
-
-
 }

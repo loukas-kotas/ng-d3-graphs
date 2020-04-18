@@ -1,6 +1,7 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Input } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Input, ElementRef } from '@angular/core';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import * as d3 from 'd3';
+import { ViewBox } from '../shared/models/viewbox.interface';
 
 export interface Pie {
   labels: string[];
@@ -20,6 +21,9 @@ interface LabelsAndData {
   y: any;
 }
 
+interface PieOptions extends GraphOptions {
+
+}
 
 
 @Component({
@@ -35,16 +39,26 @@ export class PieComponent implements OnInit {
   @Input() data: any[] = [];
   @Input() backgroundColors: any = d3.schemeSet2;
   @Input() radius: number = 100;
-  @Input() options: GraphOptions = { width: 300, height: 300, margin: { top: 40, right: 40, bottom: 40, left: 40 } };
+  @Input() options: PieOptions = {} as PieOptions;
   color = this.interpolateColor(); // range [0,1] -> builtin range of colors.
   defaultSliceColor = 'steerblue';
   labelsAndData: LabelsAndData[] = [];
+  viewBox: ViewBox = {}  as ViewBox;
 
+  private _options: PieOptions = { width: 300, height: 300, margin: { top: 50, right: 50, bottom: 50, left: 50 } };
 
-  constructor() { }
+  constructor(
+    private container: ElementRef,
+  ) { }
 
   ngOnInit() {
-    const options = this.options;
+    this.options =  {...this._options, ...this.options};
+    this.viewBox = {
+      minX: -this.options.margin.left,
+      minY: 0,
+      width: (Number(this.options.width) + Number(this.options.margin.left) + Number(this.options.margin.right)),
+      height: this.options.height
+    };
     this.onBgdColorUndefined();
     this.render();
   }
@@ -59,10 +73,11 @@ export class PieComponent implements OnInit {
 
   render() {
     const radius = Math.min(this.options.width, this.options.height) / 2 - this.options.margin.top;
-    const svg = d3.select('#pie')
+    const svg = d3.select(this.container.nativeElement)
+      .select('div')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('viewBox', `0 0 ${this.options.width} ${this.options.height}`)
+      .attr('viewBox', `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`)
       .classed('svg-content', true)
       .append('g')
       .attr('transform', 'translate(' + this.options.width / 2 + ',' + this.options.height / 2 + ')');

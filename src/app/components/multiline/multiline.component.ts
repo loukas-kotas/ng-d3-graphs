@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, ViewEncapsulation, ElementRef } from '@angular/core';
 import * as d3 from 'd3';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import { ViewBox } from '../shared/models/viewbox.interface';
@@ -26,29 +26,36 @@ interface MultilineOptions extends GraphOptions {
 export class MultilineComponent implements OnInit {
   @Input() data: MultilineData[] = [];
   @Input() labels: any[] = [];
-  @Input() options: MultilineOptions = {
+  @Input() options?: MultilineOptions = {} as MultilineOptions;
+  labelsAndData: LabelsAndData[] = [];
+  utcParse = d3.utcParse('%Y-%m');
+  x: any;
+  y: any;
+  viewBox: ViewBox = {} as ViewBox;
+
+  _options: MultilineOptions = {
     width: 800,
     height: 500,
     yAxisLabel: '',
     xAxisLabel: '',
     margin: { top: 50, right: 50, bottom: 50, left: 50 },
   };
-  labelsAndData: LabelsAndData[] = [];
-  utcParse = d3.utcParse('%Y-%m');
-  x: any;
-  y: any;
-  viewBox: ViewBox = {
-    minX: -25,
-    minY: -25,
-    width:
-      this.options.width + this.options.margin.left + this.options.margin.right,
-    height: this.options.height + this.options.margin.top + this.options.margin.bottom,
-  };
 
 
-  constructor() { }
+  constructor(
+    private container: ElementRef,
+  ) { }
 
   ngOnInit() {
+    this.options = {...this._options, ...this.options};
+    this.viewBox = {
+      minX: -25,
+      minY: -25,
+      width:
+        Number(this.options.width) + Number(this.options.margin.left) + Number(this.options.margin.right),
+      height:
+        Number(this.options.height) + Number(this.options.margin.top) + Number(this.options.margin.bottom),
+    };
     [this.labels] = this.formatData();
     this.labelsAndData = this.combineLabelsDataToOne();
     this.render();
@@ -71,13 +78,14 @@ export class MultilineComponent implements OnInit {
   render(): void {
 
     const svg = d3
-      .select('#multiline')
+      .select(this.container.nativeElement)
+      .select('div')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('viewBox',
       `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
       )
-      .classed('svg-content', true)
+      .classed('svg-container', true)
       .append('g');
 
     const xDomain = this.getXdomain();

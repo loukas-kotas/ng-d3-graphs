@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ElementRef } from '@angular/core';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import * as d3 from 'd3';
 import { ScaleTime } from 'd3';
@@ -23,24 +23,33 @@ interface BandOptions extends GraphOptions {
 export class BandComponent implements OnInit {
   @Input() data: any[] = [];
   @Input() labels: any[] = [];
-  @Input() options: BandOptions = {
+  @Input() options?: BandOptions = {} as BandOptions;
+  labelsAndData: LabelsAndData[] = [];
+  viewBox: ViewBox = {} as ViewBox;
+
+  _options: BandOptions = {
     width: 300,
     height: 300,
     margin: { top: 50, right: 50, bottom: 50, left: 50 },
     yAxisLabel: '',
   };
-  labelsAndData: LabelsAndData[] = [];
-  viewBox: ViewBox = {
-    minX: -25,
-    minY: -25,
-    width:
-      this.options.width + this.options.margin.left,
-    height: this.options.height,
-  };
 
-  constructor() { }
+  constructor(
+    private container: ElementRef,
+  ) { }
 
   ngOnInit() {
+    this.options =  {...this._options, ...this.options};
+    this.viewBox = {
+      minX: -25,
+      minY: -25,
+      width:
+        this.options.width
+        + this.options.margin.left,
+      height:
+        this.options.height
+        + this.options.margin.top,
+    };
     this.labels = this.formatLabels();
     this.labelsAndData = this.combineLabelsDataToOne();
     this.render();
@@ -65,19 +74,10 @@ export class BandComponent implements OnInit {
 
   private render() {
 
-    this.viewBox = {
-      minX: -25,
-      minY: -25,
-      width:
-        this.options.width
-        + this.options.margin.left,
-      height:
-        this.options.height
-        + this.options.margin.top,
-    };
 
     const svg = d3
-      .select('#band')
+      .select(this.container.nativeElement)
+      .select('div')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr(
