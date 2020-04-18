@@ -1,8 +1,10 @@
-import { Component, OnInit, Input, ViewEncapsulation, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation, ElementRef, HostListener } from '@angular/core';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import * as d3 from 'd3';
 import { ScaleTime } from 'd3';
 import { ViewBox } from '../shared/models/viewbox.interface';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 interface LabelsAndData {
   x: any;
@@ -10,8 +12,8 @@ interface LabelsAndData {
   high: any;
 }
 
-interface BandOptions extends GraphOptions {
-  ticks?: number;
+export interface BandOptions extends GraphOptions {
+  gridTicks?: number;
 }
 
 @Component({
@@ -28,11 +30,18 @@ export class BandComponent implements OnInit {
   viewBox: ViewBox = {} as ViewBox;
 
   _options: BandOptions = {
-    width: 300,
-    height: 300,
+    width: 879,
+    height: 804,
     margin: { top: 50, right: 50, bottom: 50, left: 50 },
     yAxisLabel: '',
+    gridTicks: 0
   };
+
+  onResize$ = new Subject<void>();
+  @HostListener('window:resize')
+  onResize(): void {
+    this.onResize$.next();
+  }
 
   constructor(
     private container: ElementRef,
@@ -41,17 +50,16 @@ export class BandComponent implements OnInit {
   ngOnInit() {
     this.options =  {...this._options, ...this.options};
     this.viewBox = {
-      minX: -25,
+      minX: -this.options.margin.left,
       minY: -25,
-      width:
-        this.options.width
-        + this.options.margin.left,
-      height:
-        this.options.height
-        + this.options.margin.top,
+      width: this.options.width + this.options.margin.left + this.options.margin.right,
+      height: this.options.height + this.options.margin.top,
     };
     this.labels = this.formatLabels();
     this.labelsAndData = this.combineLabelsDataToOne();
+
+    this.onResizeEvent();
+
     this.render();
   }
 
@@ -74,12 +82,26 @@ export class BandComponent implements OnInit {
 
   private render() {
 
+    const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
+    const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
+
+    const width = this.options.width - this.options.margin.left - this.options.margin.right;
+    const height = this.options.height - this.options.margin.top - this.options.margin.bottom;
+    this.viewBox = {
+      minX: -this.options.margin.left,
+      minY: -25,
+      width: this.options.width,
+      height: this.options.height - this.options.margin.top,
+    };
 
     const svg = d3
       .select(this.container.nativeElement)
       .select('div')
       .append('svg')
-      .attr('preserveAspectRatio', 'xMinYMin meet')
+      // TODO: delete me
+      // .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('width', currentWidth)
+      .attr('height', currentHeight)
       .attr(
         'viewBox',
         `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
@@ -90,7 +112,7 @@ export class BandComponent implements OnInit {
     const x: ScaleTime<any, any> = d3
       .scaleUtc()
       .domain(d3.extent(this.labels, d => new Date(d)))
-      .range([0, this.options.width]);
+      .range([0, width]);
 
     const y = d3
       .scaleLinear()
@@ -98,48 +120,46 @@ export class BandComponent implements OnInit {
         d3.min(this.data, (d) => d.low),
         d3.max(this.data, (d) => d.high),
       ])
-      .nice(5)
-      .range([this.options.height, 0]);
+      .nice(this.options.gridTicks)
+      .range([height, 0]);
 
     // add the X gridlines
     svg.append('g').attr('class', 'grid').call(
-      this.make_x_gridlines(x).tickSize(this.options.height)
+      this.make_x_gridlines(x).tickSize(height)
       // .tickFormat('')
     );
 
     // add the Y gridlines
     svg.append('g').attr('class', 'grid').call(
-      this.make_y_gridlines(y).tickSize(-this.options.width)
+      this.make_y_gridlines(y).tickSize(-width)
       // .tickFormat('')
     );
 
 
     const xAxis = (g) =>
       g
-        .attr('transform', `translate(0,${this.options.height})`)
+        .attr('transform', `translate(0,${height})`)
         .attr('opacity', '1')
         .call(
           d3
             .axisBottom(x)
-        )
-        .call((g) => g.select('.domain').remove());
+        );
 
 
     const yAxis = (g) =>
       g
         .attr('transform', `translate(${0},0)`)
-        .attr('opacity', '1')
         .call(d3.axisLeft(y))
-        .call((g) => g.select('.domain').remove())
         .call((g) =>
           g
-            .select('.tick:last-of-type text')
-            .clone()
-            .attr('x', 3)
-            .attr('text-anchor', 'start')
-            .attr('font-weight', 'bold')
-            .text(this.options.yAxisLabel)
-        );
+          .select('.tick:last-of-type text')
+          .clone()
+          .attr('x', -5)
+          .attr('y', -10)
+          .attr('text-anchor', 'start')
+          .attr('font-weight', 'bold')
+          .text(this.options.yAxisLabel)
+      );
 
     const curve: any = d3.curveStep;
     const area = d3
@@ -162,12 +182,24 @@ export class BandComponent implements OnInit {
   }
   // gridlines in x axis function
   private make_x_gridlines(x) {
-    return d3.axisBottom(x).ticks(this.options.ticks);
+    return d3.axisBottom(x).ticks(this.options.gridTicks);
   }
 
   // gridlines in y axis function
   private make_y_gridlines(y) {
-    return d3.axisLeft(y).ticks(this.options.ticks);
+    return d3.axisLeft(y).ticks(this.options.gridTicks);
   }
+
+  onResizeEvent(): void {
+    this.onResize$
+    .pipe(
+      debounceTime(200)
+    ).subscribe(() => {
+      const svgExist = d3.select(this.container.nativeElement).select('svg');
+      if (svgExist) { svgExist.remove(); }
+      this.render();
+    });
+  }
+
 
 }

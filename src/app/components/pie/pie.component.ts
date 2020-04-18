@@ -1,7 +1,9 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Input, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Input, ElementRef, HostListener } from '@angular/core';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import * as d3 from 'd3';
 import { ViewBox } from '../shared/models/viewbox.interface';
+import { debounceTime } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 export interface Pie {
   labels: string[];
@@ -47,6 +49,12 @@ export class PieComponent implements OnInit {
 
   private _options: PieOptions = { width: 300, height: 300, margin: { top: 50, right: 50, bottom: 50, left: 50 } };
 
+  onResize$ = new Subject<void>();
+  @HostListener('window:resize')
+  onResize(): void {
+    this.onResize$.next();
+  }
+
   constructor(
     private container: ElementRef,
   ) { }
@@ -60,6 +68,9 @@ export class PieComponent implements OnInit {
       height: this.options.height
     };
     this.onBgdColorUndefined();
+
+    this.onResizeEvent();
+
     this.render();
   }
 
@@ -72,11 +83,18 @@ export class PieComponent implements OnInit {
   }
 
   render() {
+
+    const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
+    const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
+
     const radius = Math.min(this.options.width, this.options.height) / 2 - this.options.margin.top;
     const svg = d3.select(this.container.nativeElement)
       .select('div')
       .append('svg')
-      .attr('preserveAspectRatio', 'xMinYMin meet')
+      // TODO: delete me
+      // .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('width', currentWidth)
+      .attr('height', currentHeight)
       .attr('viewBox', `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`)
       .classed('svg-content', true)
       .append('g')
@@ -138,6 +156,18 @@ export class PieComponent implements OnInit {
     }
     return result;
   }
+
+  onResizeEvent(): void {
+    this.onResize$
+    .pipe(
+      debounceTime(200)
+    ).subscribe(() => {
+      const svgExist = d3.select(this.container.nativeElement).select('svg');
+      if (svgExist) { svgExist.remove(); }
+      this.render();
+    });
+  }
+
 
 
 }

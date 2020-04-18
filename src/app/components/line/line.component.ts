@@ -24,7 +24,7 @@ interface xAxisData {
 }
 
 interface LineOptions extends GraphOptions {
-  ticks?: number;
+  gridTicks?: number;
 }
 
 @Component({
@@ -43,7 +43,7 @@ export class LineComponent implements OnInit {
     width: 879,
     height: 804,
     margin: { top: 50, right: 50, bottom: 50, left: 50 },
-    ticks: 5,
+    gridTicks: 0,
   };
 
   private viewBox: ViewBox = {} as ViewBox;
@@ -53,7 +53,6 @@ export class LineComponent implements OnInit {
   xAxisData: xAxisData[] = [];
 
   onResize$ = new Subject<void>();
-
   @HostListener('window:resize')
   onResize(): void {
     this.onResize$.next();
@@ -79,16 +78,7 @@ export class LineComponent implements OnInit {
 
     this.labelsAndData = this.combineLabelsDataToOne();
 
-
-    this.onResize$
-    .pipe(
-      debounceTime(200)
-    ).subscribe(() => {
-      const svgExist = d3.select(this.container.nativeElement).select('svg');
-      if (svgExist) { svgExist.remove(); }
-      this.render();
-    });
-
+    this.onResizeEvent();
 
     this.render();
   }
@@ -103,13 +93,14 @@ export class LineComponent implements OnInit {
     this.viewBox = {
       minX: -this.options.margin.left,
       minY: -25,
-      width: width + this.options.margin.left + this.options.margin.right,
-      height: height + this.options.margin.top,
+      width: this.options.width,
+      height: this.options.height - this.options.margin.top,
     };
 
     const svg = d3
       .select(this.container.nativeElement).select('div')
       .append('svg')
+      // TODO: delete me
       // .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('width', currentWidth)
       .attr('height', currentHeight)
@@ -169,11 +160,23 @@ export class LineComponent implements OnInit {
 
   // gridlines in x axis function
   private make_x_gridlines(x) {
-    return d3.axisBottom(x).ticks(this.options.ticks);
+    return d3.axisBottom(x).ticks(this.options.gridTicks);
   }
 
   // gridlines in y axis function
   private make_y_gridlines(y) {
-    return d3.axisLeft(y).ticks(this.options.ticks);
+    return d3.axisLeft(y).ticks(this.options.gridTicks);
   }
+
+  onResizeEvent(): void {
+    this.onResize$
+    .pipe(
+      debounceTime(200)
+    ).subscribe(() => {
+      const svgExist = d3.select(this.container.nativeElement).select('svg');
+      if (svgExist) { svgExist.remove(); }
+      this.render();
+    });
+  }
+
 }

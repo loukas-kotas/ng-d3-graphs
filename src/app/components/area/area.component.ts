@@ -10,7 +10,7 @@ interface LabelsAndData {
 }
 
 interface AreaOptions extends GraphOptions {
-  ticks?: number;
+  gridTicks?: number;
 }
 @Component({
   selector: 'ng-area',
@@ -28,7 +28,7 @@ export class AreaComponent implements OnInit {
     width: 300,
     height: 300,
     margin: { top: 50, right: 50, bottom: 50, left: 50 },
-    ticks: 5,
+    gridTicks: 0,
   };
 
 
@@ -149,12 +149,12 @@ export class AreaComponent implements OnInit {
 
   // gridlines in x axis function
   private make_x_gridlines(x) {
-    return d3.axisBottom(x).ticks(this.options.ticks);
+    return d3.axisBottom(x).ticks(this.options.gridTicks);
   }
 
   // gridlines in y axis function
   private make_y_gridlines(y) {
-    return d3.axisLeft(y).ticks(this.options.ticks);
+    return d3.axisLeft(y).ticks(this.options.gridTicks);
   }
 
 
