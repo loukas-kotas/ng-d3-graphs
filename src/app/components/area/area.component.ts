@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ElementRef } from '@angular/core';
 import * as d3 from 'd3';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import { ScaleTime, ScaleOrdinal } from 'd3';
@@ -20,25 +20,32 @@ interface AreaOptions extends GraphOptions {
 export class AreaComponent implements OnInit {
   @Input() data: any[] = [];
   @Input() labels: any[] = [];
-  @Input() options: AreaOptions = {
+  @Input() options: AreaOptions = {} as AreaOptions;
+  formatx = d3.timeFormat('%Y-%m-%d %H:%M:%S');
+  labelsAndData: LabelsAndData[] = [];
+  viewBox: ViewBox = {} as ViewBox;
+  _options: AreaOptions = {
     width: 300,
     height: 300,
     margin: { top: 50, right: 50, bottom: 50, left: 50 },
     ticks: 5,
   };
-  formatx = d3.timeFormat('%Y-%m-%d %H:%M:%S');
-  labelsAndData: LabelsAndData[] = [];
-  viewBox: ViewBox = {
-    minX: -this.options.margin.left,
-    minY: -25,
-    width: (this.options.width + this.options.margin.left + this.options.margin.right),
-    height: (this.options.height + this.options.margin.top),
-  };
 
 
-  constructor() { }
+  constructor(
+    private container: ElementRef,
+  ) { }
 
   ngOnInit() {
+
+    this.options = {...this._options, ...this.options};
+
+    this.viewBox = {
+      minX: -this.options.margin.left,
+      minY: -25,
+      width: (this.options.width + this.options.margin.left + this.options.margin.right),
+      height: (this.options.height + this.options.margin.top),
+    };
 
     this.labels = this.formatLabels(this.labels);
     this.labelsAndData = this.combineLabelsDataToOne(this.labels, this.data);
@@ -60,11 +67,9 @@ export class AreaComponent implements OnInit {
 
   private render() {
 
-    // const width = this.options.width - this.options.margin.left - this.options.margin.right;
-    // const height = this.options.height - this.options.margin.top - this.options.margin.bottom;
-
     const svg = d3
-      .select('#area')
+      .select(this.container.nativeElement)
+      .select('div')
       .append('svg')
       .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('viewBox', `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`

@@ -4,10 +4,14 @@ import {
   Input,
   ViewEncapsulation,
   ChangeDetectionStrategy,
+  HostListener,
+  ElementRef,
 } from '@angular/core';
 import * as d3 from 'd3';
 import { GraphOptions } from '../shared/models/graph-options.interface';
 import { ViewBox } from '../shared/models/viewbox.interface';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 interface LabelsAndData {
   x: any;
@@ -33,34 +37,40 @@ interface LineOptions extends GraphOptions {
 export class LineComponent implements OnInit {
   @Input() data: any[] = [];
   @Input() labels: any[] = [];
-  @Input() options?: LineOptions = {
+  @Input() options?: LineOptions = {} as LineOptions;
+
+  private _options: LineOptions = {
     width: 879,
     height: 804,
     margin: { top: 50, right: 50, bottom: 50, left: 50 },
     ticks: 5,
   };
+
+  private viewBox: ViewBox = {} as ViewBox;
+
+
   labelsAndData: LabelsAndData[] = [];
   xAxisData: xAxisData[] = [];
-  viewBox: ViewBox = {
-    minX: -this.options.margin.left,
-    minY: -25,
-    width: this.options.width + this.options.margin.left + this.options.margin.right,
-    height: this.options.height + this.options.margin.top,
-  };
 
-  constructor() {}
+  onResize$ = new Subject<void>();
+
+  @HostListener('window:resize')
+  onResize(): void {
+    this.onResize$.next();
+  }
+
+  constructor(
+    private container: ElementRef,
+  ) {}
 
   ngOnInit() {
-    const options = {
-      width: this.options.width - 200,
-      height: this.options.height - 100,
-      margin: this.options.margin,
-    };
 
-    this.options = {
-      width: 879,
-      height: 804,
-      margin: { top: 50, right: 50, bottom: 50, left: 50 },
+    this.options = {...this._options,  ...this.options};
+    this.viewBox = {
+      minX: -this.options.margin.left,
+      minY: -25,
+      width: this.options.width + this.options.margin.left + this.options.margin.right,
+      height: this.options.height + this.options.margin.top,
     };
 
     const parseTime = d3.timeParse('%d-%b-%y');
@@ -68,24 +78,41 @@ export class LineComponent implements OnInit {
     this.labels = this.labels.map((d) => parseTime(d));
 
     this.labelsAndData = this.combineLabelsDataToOne();
+
+
+    this.onResize$
+    .pipe(
+      debounceTime(200)
+    ).subscribe(() => {
+      const svgExist = d3.select(this.container.nativeElement).select('svg');
+      if (svgExist) { svgExist.remove(); }
+      this.render();
+    });
+
+
     this.render();
   }
 
   private render(): void {
-    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
-    const width = this.options.width - margin.left - margin.right;
-    const height = this.options.height - margin.top - margin.bottom;
+
+    const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
+    const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
+
+    const width = this.options.width - this.options.margin.left - this.options.margin.right;
+    const height = this.options.height - this.options.margin.top - this.options.margin.bottom;
     this.viewBox = {
-      minX: -margin.left,
+      minX: -this.options.margin.left,
       minY: -25,
-      width: width + margin.left + margin.right,
-      height: height + margin.top,
+      width: width + this.options.margin.left + this.options.margin.right,
+      height: height + this.options.margin.top,
     };
 
     const svg = d3
-      .select('#line')
+      .select(this.container.nativeElement).select('div')
       .append('svg')
-      .attr('preserveAspectRatio', 'xMinYMin meet')
+      // .attr('preserveAspectRatio', 'xMinYMin meet')
+      .attr('width', currentWidth)
+      .attr('height', currentHeight)
       .attr(
         'viewBox',
         `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`

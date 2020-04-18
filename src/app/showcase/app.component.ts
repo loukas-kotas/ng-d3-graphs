@@ -37,7 +37,8 @@ export class AppComponent implements OnInit {
       labels: lineData.data.map(d => d.date),
       data: lineData.data.map(d => d.value),
       options: {
-        ticks: 5
+        height: '300',
+        ticks: 10
       },
     };
   }
