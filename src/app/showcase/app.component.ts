@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { GraphOptions } from 'ng-d3-graphs/shared/models/graph-options.interface';
 
-import * as lineData from './shared/data/line';
+import { BandOptions } from '../components/band/band.component';
+import { BarOptions } from '../components/bar/bar.component';
+import { MultilineOptions } from '../components/multiline/multiline.component';
+
 import * as areaData from './shared/data/area-small';
 import * as bandData from './shared/data/band';
-import * as multilineData from './shared/data/multiline';
 import * as barData from './shared/data/bar';
+import * as lineData from './shared/data/line';
+import * as multilineData from './shared/data/multiline';
 
-import { GraphOptions } from 'ng-d3-graphs/shared/models/graph-options.interface';
-import { MultilineOptions } from '../components/multiline/multiline.component';
-import { BarOptions } from '../components/bar/bar.component';
-import { BandOptions } from '../components/band/band.component';
 @Component({
-  selector: 'app-root',
+  selector: 'ng-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
@@ -99,7 +100,7 @@ export class AppComponent implements OnInit {
       height: 300,
       yAxisLabel: multilineData.data.y,
       gridTicks: 10,
-      xAxisLabel: "Time",
+      xAxisLabel: 'Time',
     };
     return {
       labels,

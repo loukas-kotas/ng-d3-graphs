@@ -20,7 +20,7 @@ interface LabelsAndData {
   y: any;
 }
 
-interface xAxisData {
+interface AxisDataX {
   id: number;
   value: any;
 }
@@ -53,7 +53,7 @@ export class LineComponent implements OnInit {
   private viewBox: ViewBox = {} as ViewBox;
 
   labelsAndData: LabelsAndData[] = [];
-  xAxisData: xAxisData[] = [];
+  AxisDataX: AxisDataX[] = [];
 
   onResize$ = new Subject<void>();
   @HostListener('window:resize')

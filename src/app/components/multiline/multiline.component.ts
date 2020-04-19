@@ -1,9 +1,10 @@
-import { Component, Input, OnInit, ViewEncapsulation, ElementRef, HostListener } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
-import { GraphOptions } from '../shared/models/graph-options.interface';
-import { ViewBox } from '../shared/models/viewbox.interface';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+
+import { GraphOptions } from '../shared/models/graph-options.interface';
+import { ViewBox } from '../shared/models/viewbox.interface';
 
 interface LabelsAndData {
   x: any;
@@ -49,13 +50,10 @@ export class MultilineComponent implements OnInit {
     this.onResize$.next();
   }
 
-
-  constructor(
-    private container: ElementRef,
-  ) { }
+  constructor(private container: ElementRef) {}
 
   ngOnInit() {
-    this.options = {...this._options, ...this.options};
+    this.options = { ...this._options, ...this.options };
     this.viewBox = {
       minX: -this.options.margin.left,
       minY: -25,
@@ -86,7 +84,6 @@ export class MultilineComponent implements OnInit {
   }
 
   render(): void {
-
     const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
     const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
 
@@ -100,7 +97,6 @@ export class MultilineComponent implements OnInit {
       height: this.options.height - this.options.margin.top,
     };
 
-
     const svg = d3
       .select(this.container.nativeElement)
       .select('div')
@@ -109,17 +105,12 @@ export class MultilineComponent implements OnInit {
       // .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('width', currentWidth)
       .attr('height', currentHeight)
-      .attr('viewBox',
-      `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
-      )
+      .attr('viewBox', `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`)
       .classed('svg-content', true)
       .append('g');
 
     const xDomain = this.getXdomain();
-    const x = d3
-      .scaleTime()
-      .domain(xDomain)
-      .range([0, width]);
+    const x = d3.scaleTime().domain(xDomain).range([0, width]);
 
     const y = d3
       .scaleLinear()
@@ -127,17 +118,9 @@ export class MultilineComponent implements OnInit {
       .range([height, 0])
       .nice();
 
-    const xAxis = (g) =>
-      g
-      .attr('transform', `translate(0,${height})`)
-      .call(
-        d3
-          .axisBottom(x)
-      );
+    const xAxis = (g) => g.attr('transform', `translate(0,${height})`).call(d3.axisBottom(x));
 
-    const yAxis = (g) =>
-      g
-        .call(d3.axisLeft(y));
+    const yAxis = (g) => g.call(d3.axisLeft(y));
 
     const line = d3
       .line<any>()
@@ -157,7 +140,6 @@ export class MultilineComponent implements OnInit {
       // .tickFormat('')
     );
 
-
     svg.append('g').call(xAxis);
     svg.append('g').call(yAxis);
 
@@ -165,7 +147,6 @@ export class MultilineComponent implements OnInit {
     this.addLabelAxisX(svg, width, height);
     // text label for the y axis
     this.addLabelAxisY(svg, height);
-
 
     const path = svg
       .append('g')
@@ -215,9 +196,8 @@ export class MultilineComponent implements OnInit {
         const i0 = i1 - 1;
         const i = xm - _this.labels[i0] > _this.labels[i1] - xm ? i1 : i0;
         // const s = d3.least(_this.data, d => Math.abs(d.values[i] - ym));
-        const s = _this.least(_this.data, d => Math.abs(d.values[i] - ym), i, ym);
-        path.attr('stroke', d => d === s ? null : '#ddd')
-          .filter(d => d === s)
+        const s = _this.least(_this.data, d => Math.abs(d.values[i] - ym), i,
+    ym); path.attr('stroke', d => d === s ? null : '#ddd') .filter(d => d === s)
           .raise();
         dot.attr(
           'transform', `translate(${x(_this.labels[i])},${y(s.values[i])})`);
@@ -235,11 +215,11 @@ export class MultilineComponent implements OnInit {
       }
     }
     */
-
   }
 
   private addLabelAxisY(svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number) {
-    svg.append('text')
+    svg
+      .append('text')
       .attr('transform', 'rotate(0)')
       .attr('y', 0 - this.options.margin.top / 2)
       .attr('x', 0)
@@ -265,7 +245,7 @@ export class MultilineComponent implements OnInit {
   least(arr: any[], filterFun: any, pos: any, ym: any) {
     const tempValues = arr.map((d) => filterFun(d));
     const minNum = Math.min(...tempValues);
-    let graphHovered = undefined;
+    let graphHovered;
     let minimax = tempValues[0];
     let minPos = 0;
     for (let i = 1; i < tempValues.length; i++) {
@@ -291,16 +271,12 @@ export class MultilineComponent implements OnInit {
   }
 
   onResizeEvent(): void {
-    this.onResize$
-    .pipe(
-      debounceTime(200)
-    ).subscribe(() => {
+    this.onResize$.pipe(debounceTime(200)).subscribe(() => {
       const svgExist = d3.select(this.container.nativeElement).select('svg');
-      if (svgExist) { svgExist.remove(); }
+      if (svgExist) {
+        svgExist.remove();
+      }
       this.render();
     });
   }
-
-
-
 }
