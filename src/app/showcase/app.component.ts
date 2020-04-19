@@ -41,7 +41,9 @@ export class AppComponent implements OnInit {
       data: lineData.data.map(d => d.value),
       options: {
         height: '300',
-        gridTicks: 10
+        gridTicks: 10,
+        xAxisLabel: 'Date (days)',
+        yAxisLabel: 'Value (Watt)'
       },
     };
   }
@@ -50,7 +52,7 @@ export class AppComponent implements OnInit {
     return {
       labels: ['A', 'B', 'C', 'D'],
       data: [100, 200, 300, 100],
-      options: { width: 300, height: 300 },
+      options: { width: 300, height: 300, xAxisLabel: 'Pie Axis' },
       backgroundColors: ['black', 'red', 'yellow', 'green'],
     };
   }
@@ -58,7 +60,7 @@ export class AppComponent implements OnInit {
   getBarData(): any {
     const labels = barData.data.map(d => d.Run);
     const data = barData.data.map(d => d.Speed);
-    const options: BarOptions = { height: 300, gridTicks: 0};
+    const options: BarOptions = { height: 300, gridTicks: 0, xAxisLabel: 'bar-x', yAxisLabel: 'bar-y'};
 
     return {
       labels,
@@ -80,7 +82,7 @@ export class AppComponent implements OnInit {
   getBandData(): any {
     const labels = bandData.data.map(d => d.date);
     const data = bandData.data.map(d => { return {high: d.high, low: d.low} });
-    const options: BandOptions = { height: 300, yAxisLabel: '°F', gridTicks: 0};
+    const options: BandOptions = { height: 300, yAxisLabel: 'y-band', xAxisLabel: 'x-band', gridTicks: 0};
     return {
       labels,
       data,
@@ -95,6 +97,7 @@ export class AppComponent implements OnInit {
       height: 300,
       yAxisLabel: multilineData.data.y,
       gridTicks: 10,
+      xAxisLabel: 'Time'
     };
     return {
       labels,

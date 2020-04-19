@@ -23,10 +23,10 @@
 
 <div class="container">
   <div class="line-container">
-    <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="{width: '300'}"></ng-pie>
+    <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="pie.options"></ng-pie>
   </div>
   <div class="line-container">
-    <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="{width: '300'}"></ng-pie>
+    <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="pie.options"></ng-pie>
   </div>
 </div>
 
@@ -39,6 +39,15 @@
   </div>
 </div>
 
+<div class="container">
+  <div class="line-container">
+    <ng-band [labels]="band.labels" [data]="band.data" [options]="band.options"></ng-band>
+  </div>
+  <div class="line-container">
+    <ng-band [labels]="band.labels" [data]="band.data" [options]="band.options"></ng-band>
+  </div>
+</div>
+
 <div class="solo-container">
   <ng-line [labels]="line.labels" [data]="line.data" [options]="line.options"></ng-line>
 </div>
@@ -48,7 +57,7 @@
 </div>
 
 <div class="solo-container">
-  <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="{width: '300'}"></ng-pie>
+  <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="pie.options"></ng-pie>
 </div>
 
 <div class="solo-container">

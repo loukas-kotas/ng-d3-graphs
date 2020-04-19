@@ -5,6 +5,7 @@ import { ScaleTime } from 'd3';
 import { ViewBox } from '../shared/models/viewbox.interface';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { D3Service } from '../shared/services/d3.service';
 
 interface LabelsAndData {
   x: any;
@@ -45,13 +46,14 @@ export class BandComponent implements OnInit {
 
   constructor(
     private container: ElementRef,
+    private d3Service: D3Service,
   ) { }
 
   ngOnInit() {
     this.options =  {...this._options, ...this.options};
     this.viewBox = {
       minX: -this.options.margin.left,
-      minY: -25,
+      minY: -10,
       width: this.options.width + this.options.margin.left + this.options.margin.right,
       height: this.options.height + this.options.margin.top,
     };
@@ -89,7 +91,7 @@ export class BandComponent implements OnInit {
     const height = this.options.height - this.options.margin.top - this.options.margin.bottom;
     this.viewBox = {
       minX: -this.options.margin.left,
-      minY: -25,
+      minY: -10,
       width: this.options.width,
       height: this.options.height - this.options.margin.top,
     };
@@ -110,7 +112,7 @@ export class BandComponent implements OnInit {
       .append('g');
 
     const x: ScaleTime<any, any> = d3
-      .scaleUtc()
+      .scaleTime()
       .domain(d3.extent(this.labels, d => new Date(d)))
       .range([0, width]);
 
@@ -149,17 +151,7 @@ export class BandComponent implements OnInit {
     const yAxis = (g) =>
       g
         .attr('transform', `translate(${0},0)`)
-        .call(d3.axisLeft(y))
-        .call((g) =>
-          g
-          .select('.tick:last-of-type text')
-          .clone()
-          .attr('x', -5)
-          .attr('y', -10)
-          .attr('text-anchor', 'start')
-          .attr('font-weight', 'bold')
-          .text(this.options.yAxisLabel)
-      );
+        .call(d3.axisLeft(y));
 
     const curve: any = d3.curveStep;
     const area = d3
@@ -172,6 +164,12 @@ export class BandComponent implements OnInit {
     svg.append('g').call(xAxis);
     svg.append('g').call(yAxis);
 
+    // this.d3Service.addLabelAxisX(svg, width, height, this.options);
+
+    // text label for the x axis
+    this.addLabelAxisX(svg, width, height);
+    // text label for the y axis
+    this.addLabelAxisY(svg, height);
 
     svg
       .append('path')
@@ -180,6 +178,25 @@ export class BandComponent implements OnInit {
       .attr('d', area);
 
   }
+
+  private addLabelAxisY(svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number) {
+    svg.append('text')
+      .attr('transform', 'rotate(0)')
+      .attr('y', 0 - this.options.margin.top / 2)
+      .attr('x', 0)
+      .attr('dy', '1em')
+      .style('text-anchor', 'start')
+      .text(this.options.yAxisLabel);
+  }
+
+  private addLabelAxisX(svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number, height: number) {
+    svg
+      .append('text')
+      .attr('transform', 'translate(' + width / 2 + ' ,' + (height + this.options.margin.top - 15) + ')')
+      .style('text-anchor', 'middle')
+      .text(this.options.xAxisLabel);
+  }
+
   // gridlines in x axis function
   private make_x_gridlines(x) {
     return d3.axisBottom(x).ticks(this.options.gridTicks);
