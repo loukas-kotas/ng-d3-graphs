@@ -23,6 +23,9 @@
     },
     "dest": "dist"
   },
+  "scripts": {
+    "release": "node ../../../node_modules/standard-version/bin/cli.js && cp ./CHANGELOG.md ./../../../"
+  },
   "private": false,
   "keywords": [
     "d3",

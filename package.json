@@ -10,6 +10,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "ng-packagr": "ng-packagr",
+    "release": "npm run release --prefix ./src/app/components/",
     "build:lib": "ng-packagr -p src/app/components/package.json",
     "build:docs": "docsify init ./docs",
     "start:docs": "docsify serve ./docs",
