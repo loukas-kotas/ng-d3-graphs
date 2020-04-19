@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
+import { ViewBox } from '../models/viewbox.interface';
 
 export enum AxisDirection { top = 'top', right = 'right', bottom = 'bottom', left = 'left' }
 @Injectable({
@@ -62,6 +63,35 @@ export class D3Service {
     return d3.scaleLinear()
     .domain([0, Math.max(...data)])
     .rangeRound([height, 0]);
+  }
+
+  addLabelAxisY(svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number, options: any) {
+    svg.append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 0 - options.margin.left)
+      .attr('x', 0 - (height / 2))
+      .attr('dy', '1em')
+      .style('text-anchor', 'middle')
+      .text(options.yAxisLabel);
+  }
+
+  addLabelAxisX(svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number, height: number, options: any) {
+    svg
+      .append('text')
+      .attr('transform', 'translate(' + width / 2 + ' ,' + (height + options.margin.top) + ')')
+      .style('text-anchor', 'middle')
+      .text(options.xAxisLabel);
+  }
+
+  getViewBoxDefault(options: any): ViewBox {
+    const res = {
+      minX: -options.margin.left,
+      minY: -25,
+      width: options.width,
+      height: options.height - options.margin.top,
+    };
+
+    return res;
   }
 
 

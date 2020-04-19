@@ -12,6 +12,7 @@ import { GraphOptions } from '../shared/models/graph-options.interface';
 import { ViewBox } from '../shared/models/viewbox.interface';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { D3Service } from '../shared/services/d3.service';
 
 interface LabelsAndData {
   x: any;
@@ -44,10 +45,11 @@ export class LineComponent implements OnInit {
     height: 804,
     margin: { top: 50, right: 50, bottom: 50, left: 50 },
     gridTicks: 0,
+    yAxisLabel: '',
+    xAxisLabel: ''
   };
 
   private viewBox: ViewBox = {} as ViewBox;
-
 
   labelsAndData: LabelsAndData[] = [];
   xAxisData: xAxisData[] = [];
@@ -60,17 +62,12 @@ export class LineComponent implements OnInit {
 
   constructor(
     private container: ElementRef,
+    private d3Service: D3Service,
   ) {}
 
   ngOnInit() {
-
-    this.options = {...this._options,  ...this.options};
-    this.viewBox = {
-      minX: -this.options.margin.left,
-      minY: -25,
-      width: this.options.width + this.options.margin.left + this.options.margin.right,
-      height: this.options.height + this.options.margin.top,
-    };
+    this.options = { ...this._options, ...this.options };
+    this.viewBox = this.d3Service.getViewBoxDefault(this.options);
 
     const parseTime = d3.timeParse('%d-%b-%y');
 
@@ -84,21 +81,31 @@ export class LineComponent implements OnInit {
   }
 
   private render(): void {
+    const currentWidth = parseInt(
+      d3.select(this.container.nativeElement).select('div').style('width'),
+      10
+    );
+    const currentHeight = parseInt(
+      d3.select(this.container.nativeElement).select('div').style('height'),
+      10
+    );
 
-    const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
-    const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
-
-    const width = this.options.width - this.options.margin.left - this.options.margin.right;
-    const height = this.options.height - this.options.margin.top - this.options.margin.bottom;
+    const width =
+      this.options.width - this.options.margin.left - this.options.margin.right;
+    const height =
+      this.options.height -
+      this.options.margin.top -
+      this.options.margin.bottom;
     this.viewBox = {
       minX: -this.options.margin.left,
-      minY: -25,
+      minY: -10,
       width: this.options.width,
       height: this.options.height - this.options.margin.top,
     };
 
     const svg = d3
-      .select(this.container.nativeElement).select('div')
+      .select(this.container.nativeElement)
+      .select('div')
       .append('svg')
       // TODO: delete me
       // .attr('preserveAspectRatio', 'xMinYMin meet')
@@ -140,13 +147,37 @@ export class LineComponent implements OnInit {
       .attr('d', valueline);
 
     // add the X Axis
-    svg
+    const xAxis = svg
       .append('g')
       .attr('transform', 'translate(0,' + height + ')')
       .call(d3.axisBottom(x));
 
+    // text label for the x axis
+    this.addLabelAxisX(svg, width, height);
+
     // add the Y Axis
-    svg.append('g').call(d3.axisLeft(y));
+    const yAxis = svg.append('g').call(d3.axisLeft(y));
+
+    // text label for the y axis
+    this.addLabelAxisY(svg, height);
+  }
+
+  private addLabelAxisY(svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number) {
+    svg.append('text')
+      .attr('transform', 'rotate(0)')
+      .attr('y', 0 - this.options.margin.top / 2)
+      .attr('x', 0)
+      .attr('dy', '1em')
+      .style('text-anchor', 'start')
+      .text(this.options.yAxisLabel);
+  }
+
+  private addLabelAxisX(svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number, height: number) {
+    svg
+      .append('text')
+      .attr('transform', 'translate(' + width / 2 + ' ,' + (height + this.options.margin.top - 15) + ')')
+      .style('text-anchor', 'middle')
+      .text(this.options.xAxisLabel);
   }
 
   private combineLabelsDataToOne(): LabelsAndData[] {
@@ -169,14 +200,12 @@ export class LineComponent implements OnInit {
   }
 
   onResizeEvent(): void {
-    this.onResize$
-    .pipe(
-      debounceTime(200)
-    ).subscribe(() => {
+    this.onResize$.pipe(debounceTime(200)).subscribe(() => {
       const svgExist = d3.select(this.container.nativeElement).select('svg');
-      if (svgExist) { svgExist.remove(); }
+      if (svgExist) {
+        svgExist.remove();
+      }
       this.render();
     });
   }
-
 }

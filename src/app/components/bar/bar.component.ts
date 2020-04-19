@@ -84,7 +84,7 @@ export class BarComponent implements OnInit {
     this.options =  {...this._options, ...this.options};
     this.viewBox = {
       minX: -this.options.margin.left,
-      minY: -25,
+      minY: -10,
       width: this.options.width + this.options.margin.left + this.options.margin.right,
       height: this.options.height + this.options.margin.top,
     };
@@ -104,7 +104,7 @@ export class BarComponent implements OnInit {
     const height = this.options.height - this.options.margin.top - this.options.margin.bottom;
     this.viewBox = {
       minX: -this.options.margin.left,
-      minY: -25,
+      minY: -10,
       width: this.options.width,
       height: this.options.height - this.options.margin.top,
     };
@@ -143,14 +143,7 @@ export class BarComponent implements OnInit {
 
     const yAxis = (g) =>
       g
-        .call(d3.axisLeft(y))
-        .append('text')
-        .attr('fill', '#000')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', 6)
-        .attr('dy', '0.71em')
-        .attr('text-anchor', 'end')
-        .text(this.options.yAxisLabel);
+        .call(d3.axisLeft(y));
 
     // add the X gridlines
     svg.append('g').attr('class', 'grid').call(
@@ -183,8 +176,34 @@ export class BarComponent implements OnInit {
 
     svg.append('g').call(xAxis);
 
+    // text label for the x axis
+    this.addLabelAxisX(svg, width, height);
+
     svg.append('g').call(yAxis);
+
+    // text label for the y axis
+    this.addLabelAxisY(svg, height);
+
   }
+
+  private addLabelAxisY(svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number) {
+    svg.append('text')
+      .attr('transform', 'rotate(0)')
+      .attr('y', 0 - this.options.margin.top / 2)
+      .attr('x', 0)
+      .attr('dy', '1em')
+      .style('text-anchor', 'start')
+      .text(this.options.yAxisLabel);
+  }
+
+  private addLabelAxisX(svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number, height: number) {
+    svg
+      .append('text')
+      .attr('transform', 'translate(' + width / 2 + ' ,' + (height + this.options.margin.top - 15) + ')')
+      .style('text-anchor', 'middle')
+      .text(this.options.xAxisLabel);
+  }
+
 
   private combineLabelsDataToOne(): LabelsAndData[] {
     const result = [];

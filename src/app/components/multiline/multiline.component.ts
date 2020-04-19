@@ -95,7 +95,7 @@ export class MultilineComponent implements OnInit {
 
     this.viewBox = {
       minX: -this.options.margin.left,
-      minY: -25,
+      minY: -10,
       width: this.options.width,
       height: this.options.height - this.options.margin.top,
     };
@@ -137,17 +137,7 @@ export class MultilineComponent implements OnInit {
 
     const yAxis = (g) =>
       g
-        .call(d3.axisLeft(y))
-        .call((g) =>
-          g
-            .select('.tick:last-of-type text')
-            .clone()
-            .attr('x', -5)
-            .attr('y', -10)
-            .attr('text-anchor', 'start')
-            .attr('font-weight', 'bold')
-            .text(this.options.yAxisLabel)
-        );
+        .call(d3.axisLeft(y));
 
     const line = d3
       .line<any>()
@@ -169,8 +159,13 @@ export class MultilineComponent implements OnInit {
 
 
     svg.append('g').call(xAxis);
-
     svg.append('g').call(yAxis);
+
+    // text label for the x axis
+    this.addLabelAxisX(svg, width, height);
+    // text label for the y axis
+    this.addLabelAxisY(svg, height);
+
 
     const path = svg
       .append('g')
@@ -241,6 +236,25 @@ export class MultilineComponent implements OnInit {
     }
     */
 
+  }
+
+  private addLabelAxisY(svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number) {
+    svg.append('text')
+      .attr('transform', 'rotate(0)')
+      .attr('y', 0 - this.options.margin.top / 2)
+      .attr('x', 0)
+      .attr('dy', '1em')
+      .style('text-anchor', 'start')
+
+      .text(this.options.yAxisLabel);
+  }
+
+  private addLabelAxisX(svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number, height: number) {
+    svg
+      .append('text')
+      .attr('transform', 'translate(' + width / 2 + ' ,' + (height + this.options.margin.top - 15) + ')')
+      .style('text-anchor', 'middle')
+      .text(this.options.xAxisLabel);
   }
 
   private getXdomain(): Date[] {
