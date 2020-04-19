@@ -1,9 +1,18 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectionStrategy, Input, ElementRef, HostListener } from '@angular/core';
-import { GraphOptions } from '../shared/models/graph-options.interface';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostListener,
+  Input,
+  OnInit,
+  ViewEncapsulation,
+} from '@angular/core';
 import * as d3 from 'd3';
-import { ViewBox } from '../shared/models/viewbox.interface';
-import { debounceTime } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+
+import { GraphOptions } from '../shared/models/graph-options.interface';
+import { ViewBox } from '../shared/models/viewbox.interface';
 
 export interface Pie {
   labels: string[];
@@ -23,11 +32,6 @@ interface LabelsAndData {
   y: any;
 }
 
-interface PieOptions extends GraphOptions {
-
-}
-
-
 @Component({
   selector: 'ng-pie',
   templateUrl: './pie.component.html',
@@ -40,13 +44,13 @@ export class PieComponent implements OnInit {
   @Input() data: any[] = [];
   @Input() backgroundColors: any = d3.schemeSet2;
   @Input() radius: number = 100;
-  @Input() options: PieOptions = {} as PieOptions;
+  @Input() options: GraphOptions = {} as GraphOptions;
   color = this.interpolateColor(); // range [0,1] -> builtin range of colors.
   defaultSliceColor = 'steerblue';
   labelsAndData: LabelsAndData[] = [];
   viewBox: ViewBox = {} as ViewBox;
 
-  private _options: PieOptions = {
+  private _options: GraphOptions = {
     width: 300,
     height: 300,
     margin: { top: 50, right: 50, bottom: 50, left: 50 },
@@ -58,17 +62,14 @@ export class PieComponent implements OnInit {
     this.onResize$.next();
   }
 
-  constructor(private container: ElementRef) { }
+  constructor(private container: ElementRef) {}
 
   ngOnInit() {
     this.options = { ...this._options, ...this.options };
     this.viewBox = {
       minX: -this.options.margin.left,
       minY: 0,
-      width:
-        Number(this.options.width) +
-        Number(this.options.margin.left) +
-        Number(this.options.margin.right),
+      width: Number(this.options.width) + Number(this.options.margin.left) + Number(this.options.margin.right),
       height: this.options.height,
     };
     this.onBgdColorUndefined();
@@ -80,24 +81,23 @@ export class PieComponent implements OnInit {
 
   private onBgdColorUndefined() {
     if (this.backgroundColors.length === 0) {
-      for (let index = 0; index < this.data.length; index++) {
+      // TODO: check linter
+      // for (let index = 0; index < this.data.length; index++) {
+      //   this.backgroundColors.push(this.defaultSliceColor);
+      // }
+      for (const iterator of this.data) {
         this.backgroundColors.push(this.defaultSliceColor);
       }
     }
   }
 
   render() {
-    const currentWidth = parseInt(
-      d3.select(this.container.nativeElement).select('div').style('width'),
-      10
-    );
-    const currentHeight = parseInt(
-      d3.select(this.container.nativeElement).select('div').style('height'),
-      10
-    );
+    const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
+    const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
 
     // const width =
-    //   this.options.width - this.options.margin.left - this.options.margin.right;
+    //   this.options.width - this.options.margin.left -
+    //   this.options.margin.right;
     // const height =
     //   this.options.height -
     //   this.options.margin.top -
@@ -109,10 +109,7 @@ export class PieComponent implements OnInit {
     //   height: this.options.height - this.options.margin.top,
     // };
 
-
-    const radius =
-      Math.min(this.options.width, this.options.height) / 2 -
-      this.options.margin.top;
+    const radius = Math.min(this.options.width, this.options.height) / 2 - this.options.margin.top;
     const svg = d3
       .select(this.container.nativeElement)
       .select('div')
@@ -121,25 +118,12 @@ export class PieComponent implements OnInit {
       // .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('width', currentWidth)
       .attr('height', currentHeight)
-      .attr(
-        'viewBox',
-        `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
-      )
+      .attr('viewBox', `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`)
       .classed('svg-content', true)
       .append('g')
-      .attr(
-        'transform',
-        'translate(' +
-        this.options.width / 2 +
-        ',' +
-        this.options.height / 2 +
-        ')'
-      );
+      .attr('transform', 'translate(' + this.options.width / 2 + ',' + this.options.height / 2 + ')');
 
-    const color = d3
-      .scaleOrdinal()
-      .domain(this.data)
-      .range(this.backgroundColors);
+    const color = d3.scaleOrdinal().domain(this.data).range(this.backgroundColors);
 
     const pie = d3.pie<any>().value((d) => d.value);
 
@@ -180,19 +164,12 @@ export class PieComponent implements OnInit {
     this.addLabelAxisX(svg, this.options.width, this.options.height);
   }
 
-  private addLabelAxisX(
-    svg: d3.Selection<SVGGElement, unknown, null, undefined>,
-    width: number,
-    height: number
-  ) {
+  private addLabelAxisX(svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number, height: number) {
     console.log('jjjjj');
     console.log(this.options.xAxisLabel);
     svg
       .append('text')
-      .attr(
-        'transform',
-        `translate(${0}, ${this.options.margin.top * 2.5})`
-      )
+      .attr('transform', `translate(${0}, ${this.options.margin.top * 2.5})`)
       .style('text-anchor', 'middle')
       .text(this.options.xAxisLabel);
   }

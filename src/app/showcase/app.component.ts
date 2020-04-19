@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
+import { GraphOptions } from 'ng-d3-graphs/shared/models/graph-options.interface';
 
-import * as lineData from './shared/data/line';
+import { BandOptions } from '../components/band/band.component';
+import { BarOptions } from '../components/bar/bar.component';
+import { MultilineOptions } from '../components/multiline/multiline.component';
+
 import * as areaData from './shared/data/area-small';
 import * as bandData from './shared/data/band';
-import * as multilineData from './shared/data/multiline';
 import * as barData from './shared/data/bar';
+import * as lineData from './shared/data/line';
+import * as multilineData from './shared/data/multiline';
 
-import { GraphOptions } from 'ng-d3-graphs/shared/models/graph-options.interface';
-import { MultilineOptions } from '../components/multiline/multiline.component';
-import { BarOptions } from '../components/bar/bar.component';
-import { BandOptions } from '../components/band/band.component';
 @Component({
-  selector: 'app-root',
+  selector: 'ng-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   title = 'ng-d3-graphs';
@@ -37,13 +38,13 @@ export class AppComponent implements OnInit {
 
   getLineData(): any {
     return {
-      labels: lineData.data.map(d => d.date),
-      data: lineData.data.map(d => d.value),
+      labels: lineData.data.map((d) => d.date),
+      data: lineData.data.map((d) => d.value),
       options: {
         height: '300',
         gridTicks: 10,
         xAxisLabel: 'Date (days)',
-        yAxisLabel: 'Value (Watt)'
+        yAxisLabel: 'Value (Watt)',
       },
     };
   }
@@ -58,14 +59,14 @@ export class AppComponent implements OnInit {
   }
 
   getBarData(): any {
-    const labels = barData.data.map(d => d.Run);
-    const data = barData.data.map(d => d.Speed);
-    const options: BarOptions = { height: 300, gridTicks: 0, xAxisLabel: 'bar-x', yAxisLabel: 'bar-y'};
+    const labels = barData.data.map((d) => d.Run);
+    const data = barData.data.map((d) => d.Speed);
+    const options: BarOptions = { height: 300, gridTicks: 0, xAxisLabel: 'bar-x', yAxisLabel: 'bar-y' };
 
     return {
       labels,
       data,
-      options
+      options,
     };
   }
 
@@ -80,13 +81,15 @@ export class AppComponent implements OnInit {
   // }
 
   getBandData(): any {
-    const labels = bandData.data.map(d => d.date);
-    const data = bandData.data.map(d => { return {high: d.high, low: d.low} });
-    const options: BandOptions = { height: 300, yAxisLabel: 'y-band', xAxisLabel: 'x-band', gridTicks: 0};
+    const labels = bandData.data.map((d) => d.date);
+    const data = bandData.data.map((d) => {
+      return { high: d.high, low: d.low };
+    });
+    const options: BandOptions = { height: 300, yAxisLabel: 'y-band', xAxisLabel: 'x-band', gridTicks: 0 };
     return {
       labels,
       data,
-      options
+      options,
     };
   }
 
@@ -97,7 +100,7 @@ export class AppComponent implements OnInit {
       height: 300,
       yAxisLabel: multilineData.data.y,
       gridTicks: 10,
-      xAxisLabel: 'Time'
+      xAxisLabel: 'Time',
     };
     return {
       labels,
@@ -105,6 +108,4 @@ export class AppComponent implements OnInit {
       options,
     };
   }
-
-
 }

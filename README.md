@@ -4,7 +4,7 @@
 
 ## Getting Started
 
-* [Documentation](https://loukaskotas.com/ng-d3-graphs/#/index)
+- [Documentation](https://loukaskotas.com/ng-d3-graphs/#/index)
 
 ## Quick Start
 
@@ -20,10 +20,12 @@ npm install d3@5.15.0
 npm install ng-d3-graphs
 ```
 
-## Git Workflow
+## Development
 
-* Install [Commitizen](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-changelog-generator) globally
-* Install vscode plugin [changelog-generator](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-changelog-generator)
+- Install [Commitizen](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-changelog-generator) globally
+- Install vscode plugin [changelog-generator](https://marketplace.visualstudio.com/items?itemName=axetroy.vscode-changelog-generator)
+- Install vscode plugin [Prettier - Code Formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- Add `"editor.formatOnSave": true` in vscode user settings to automatically format code after save
 
 ## Development server
 
@@ -49,15 +51,15 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
 
-
 ## How to Migrate d3.js graph into a component
 
 ### General Process
+
 1. Understand the inputs of the graph
 2. Specify the required input into objects
 3. Define a clear API of the graph component
-    * Input
-    * Output (events)
+   - Input
+   - Output (events)
 4. Create an svg element at markup
 5. Provide a unique id to svg to avoid conflicts
 6. Transfer logic from graph into the component
