@@ -1,9 +1,13 @@
-import { TestBed } from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 
-import { BarService } from './bar.service';
+import {BarService} from './bar.service';
 
 describe('BarService', () => {
-  beforeEach(() => TestBed.configureTestingModule({}));
+  beforeEach(() => TestBed.configureTestingModule({
+    providers: [
+      BarService,
+    ]
+  }));
 
   it('should be created', () => {
     const service: BarService = TestBed.get(BarService);
