@@ -5,9 +5,11 @@ node_js:
 dist: trusty
 sudo: required
 
-before_script:
+before_install:
   - npm i @angular/compiler-cli
   - npm run build:lib
+
+before_script:
   - npm install
 
 lint:
