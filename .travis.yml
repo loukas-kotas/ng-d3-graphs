@@ -1,0 +1,25 @@
+language: node_js
+node_js:
+  - '10'
+
+dist: trusty
+sudo: required
+branches:
+  only:
+    - master
+
+cache:
+  directories:
+    - ./node_modules
+
+before_script:
+  - npm install
+
+lint:
+  - npm run lint
+
+build:
+  - npm run build -- --prod
+
+test:
+  - npm run test-headless
