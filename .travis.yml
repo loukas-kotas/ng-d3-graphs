@@ -12,11 +12,7 @@ before_install:
 before_script:
   - npm install
 
-lint:
+script:
   - npm run lint
-
-build:
   - npm run build -- --prod
-
-test:
   - npm run test-headless
