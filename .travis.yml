@@ -1,0 +1,18 @@
+language: node_js
+node_js:
+  - '10'
+
+dist: trusty
+sudo: required
+
+before_install:
+  - npm i @angular/compiler-cli
+  - npm run build:lib
+
+before_script:
+  - npm install
+
+script:
+  - npm run lint
+  - npm run build -- --prod
+  - npm run test-headless
