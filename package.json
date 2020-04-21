@@ -8,6 +8,7 @@
     "build": "ng build",
     "test": "ng test",
     "test-headless": "ng test --watch=false --browsers=ChromeHeadless",
+    "test:coverage": "ng test --code-coverage",
     "lint": "ng lint",
     "e2e": "ng e2e",
     "ng-packagr": "ng-packagr",
