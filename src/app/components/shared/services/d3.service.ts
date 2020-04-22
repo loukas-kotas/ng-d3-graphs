@@ -97,5 +97,15 @@ export class D3Service {
     axis.selectAll('.tick').selectAll('line').remove();
   }
 
+  changeAxisColor(
+      axis: d3.Selection<SVGGElement, unknown, null, undefined>, config: any) {
+    axis.select('path')
+        .attr('color', config.color)
+        .attr('opacity', config.opacity)
+        .attr('rendering', config.rendering)
+        .attr('stroke-width', config.strokeWidth);
+  }
+
+
   // =============
 }

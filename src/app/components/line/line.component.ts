@@ -1,19 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  HostListener,
-  Input,
-  OnInit,
-  ViewEncapsulation,
-} from '@angular/core';
+import {ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnInit, ViewEncapsulation,} from '@angular/core';
 import * as d3 from 'd3';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {debounceTime} from 'rxjs/operators';
 
-import { GraphOptions } from '../shared/models/graph-options.interface';
-import { ViewBox } from '../shared/models/viewbox.interface';
-import { D3Service } from '../shared/services/d3.service';
+import {axisConfig} from '../shared/config/axis.config';
+import {GraphOptions} from '../shared/models/graph-options.interface';
+import {ViewBox} from '../shared/models/viewbox.interface';
+import {D3Service} from '../shared/services/d3.service';
 
 interface LabelsAndData {
   x: any;
@@ -44,7 +37,7 @@ export class LineComponent implements OnInit {
   private _options: LineOptions = {
     width: 879,
     height: 804,
-    margin: { top: 50, right: 50, bottom: 50, left: 50 },
+    margin: {top: 50, right: 50, bottom: 50, left: 50},
     gridTicks: 0,
     yAxisLabel: '',
     xAxisLabel: '',
@@ -64,7 +57,7 @@ export class LineComponent implements OnInit {
   constructor(private container: ElementRef, private d3Service: D3Service) {}
 
   ngOnInit() {
-    this.options = { ...this._options, ...this.options };
+    this.options = {...this._options, ...this.options};
     this.viewBox = this.d3Service.getViewBoxDefault(this.options);
 
     const parseTime = d3.timeParse('%d-%b-%y');
@@ -79,11 +72,17 @@ export class LineComponent implements OnInit {
   }
 
   private render(): void {
-    const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
-    const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
+    const currentWidth = parseInt(
+        d3.select(this.container.nativeElement).select('div').style('width'),
+        10);
+    const currentHeight = parseInt(
+        d3.select(this.container.nativeElement).select('div').style('height'),
+        10);
 
-    const width = this.options.width - this.options.margin.left - this.options.margin.right;
-    const height = this.options.height - this.options.margin.top - this.options.margin.bottom;
+    const width = this.options.width - this.options.margin.left -
+        this.options.margin.right;
+    const height = this.options.height - this.options.margin.top -
+        this.options.margin.bottom;
     this.viewBox = {
       minX: -this.options.margin.left,
       minY: -10,
@@ -91,45 +90,50 @@ export class LineComponent implements OnInit {
       height: this.options.height - this.options.margin.top,
     };
 
-    const svg = d3
-      .select(this.container.nativeElement)
-      .select('div')
-      .append('svg')
-      .attr('width', currentWidth)
-      .attr('height', currentHeight)
-      .attr('viewBox', `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`)
-      .classed('svg-content', true)
-      .append('g');
+    const svg = d3.select(this.container.nativeElement)
+                    .select('div')
+                    .append('svg')
+                    .attr('width', currentWidth)
+                    .attr('height', currentHeight)
+                    .attr(
+                        'viewBox',
+                        `${this.viewBox.minX} ${this.viewBox.minY} ${
+                            this.viewBox.width} ${this.viewBox.height}`)
+                    .classed('svg-content', true)
+                    .append('g');
 
     const x = d3.scaleTime().range([0, width]);
     const y = d3.scaleLinear().range([height, 0]).nice();
-    const valueline = d3
-      .line<any>()
-      .x((d) => x(d.x))
-      .y((d) => y(d.y));
+    const valueline = d3.line<any>().x((d) => x(d.x)).y((d) => y(d.y));
 
     x.domain(d3.extent(this.labels, (d) => d));
     y.domain([0, d3.max(this.data, (d) => d)]);
 
     // add the X gridlines
-    svg.append('g').attr('class', 'grid').call(
-      this.make_x_gridlines(x).tickSize(height)
-      // .tickFormat('')
-    );
+    svg.append('g')
+        .attr('class', 'grid')
+        .call(
+            this.make_x_gridlines(x).tickSize(height)
+            // .tickFormat('')
+        );
 
     // add the Y gridlines
-    svg.append('g').attr('class', 'grid').call(
-      this.make_y_gridlines(y).tickSize(-width)
-      // .tickFormat('')
-    );
+    svg.append('g')
+        .attr('class', 'grid')
+        .call(
+            this.make_y_gridlines(y).tickSize(-width)
+            // .tickFormat('')
+        );
 
-    svg.append('path').datum(this.labelsAndData).attr('class', 'line').attr('d', valueline);
+    svg.append('path')
+        .datum(this.labelsAndData)
+        .attr('class', 'line')
+        .attr('d', valueline);
 
     // add the X Axis
-    const xAxis = svg
-      .append('g')
-      .attr('transform', 'translate(0,' + height + ')')
-      .call(d3.axisBottom(x));
+    const xAxis = svg.append('g')
+                      .attr('transform', 'translate(0,' + height + ')')
+                      .call(d3.axisBottom(x));
 
     // text label for the x axis
     this.addLabelAxisX(svg, width, height);
@@ -142,36 +146,50 @@ export class LineComponent implements OnInit {
 
     this.removeAxisTicks(xAxis);
     this.removeAxisTicks(yAxis);
+
+    this.changeAxisColor(xAxis, axisConfig);
+    this.changeAxisColor(yAxis, axisConfig);
   }
 
-  private removeAxisTicks(axis: d3.Selection<SVGGElement, unknown, null, undefined>) {
+  private changeAxisColor(
+      axis: d3.Selection<SVGGElement, unknown, null, undefined>, config: any) {
+    this.d3Service.changeAxisColor(axis, config);
+  }
+
+  private removeAxisTicks(
+      axis: d3.Selection<SVGGElement, unknown, null, undefined>) {
     this.d3Service.removeAxisTicks(axis);
   }
 
-  private addLabelAxisY(svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number) {
-    svg
-      .append('text')
-      .attr('transform', 'rotate(0)')
-      .attr('y', 0 - this.options.margin.top / 2)
-      .attr('x', 0)
-      .attr('dy', '1em')
-      .style('text-anchor', 'start')
-      .text(this.options.yAxisLabel);
+  private addLabelAxisY(
+      svg: d3.Selection<SVGGElement, unknown, null, undefined>,
+      height: number) {
+    svg.append('text')
+        .attr('transform', 'rotate(0)')
+        .attr('y', 0 - this.options.margin.top / 2)
+        .attr('x', 0)
+        .attr('dy', '1em')
+        .style('text-anchor', 'start')
+        .text(this.options.yAxisLabel);
   }
 
-  private addLabelAxisX(svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number, height: number) {
-    svg
-      .append('text')
-      .attr('transform', 'translate(' + width / 2 + ' ,' + (height + this.options.margin.top - 15) + ')')
-      .style('text-anchor', 'middle')
-      .text(this.options.xAxisLabel);
+  private addLabelAxisX(
+      svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number,
+      height: number) {
+    svg.append('text')
+        .attr(
+            'transform',
+            'translate(' + width / 2 + ' ,' +
+                (height + this.options.margin.top - 15) + ')')
+        .style('text-anchor', 'middle')
+        .text(this.options.xAxisLabel);
   }
 
   private combineLabelsDataToOne(): LabelsAndData[] {
     const result = [];
     const N = this.data.length;
     for (let index = 0; index < N; index++) {
-      result.push({ x: this.labels[index], y: this.data[index] });
+      result.push({x: this.labels[index], y: this.data[index]});
     }
     return result;
   }
