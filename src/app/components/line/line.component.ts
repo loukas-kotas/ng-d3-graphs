@@ -139,6 +139,13 @@ export class LineComponent implements OnInit {
 
     // text label for the y axis
     this.addLabelAxisY(svg, height);
+
+    this.removeAxisTicks(xAxis);
+    this.removeAxisTicks(yAxis);
+  }
+
+  private removeAxisTicks(axis: d3.Selection<SVGGElement, unknown, null, undefined>) {
+    this.d3Service.removeAxisTicks(axis);
   }
 
   private addLabelAxisY(svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number) {
