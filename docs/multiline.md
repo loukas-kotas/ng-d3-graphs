@@ -17,6 +17,18 @@ imports: [
 | ------------- |:-------------:| -----:| -------------:|
 | labels        | Date[]        | [] | Array of labels. Currently support **dates** only. |
 | data        | string[]        | [] | Array of values. |
+| options | any[]  |      [] |                                   Array of values. |
+
+### options
+
+| Name       |                            Type                             |                                    Default |                      Description |
+| ---------- | :---------------------------------------------------------: | -----------------------------------------: | -------------------------------: |
+| width      |                           number                            |                                        879 |               width of svg graph |
+| height     |                           number                            |                                        804 |              height of svg graph |
+| margin     | {top: number, right: number:, bottom: number, left: number} | {top: 50, right: 50, bottom: 50, left: 50} | Object containing the svg margin |
+| yAxisLabel |                           number                            |                                         '' |                  label of y axis |
+| xAxisLabel |                           number                            |                                         '' |                  label of x axis |
+| gridTicks  |                           number                            |                                          0 |              ticks of grid lines |
 
 
 ## Example
