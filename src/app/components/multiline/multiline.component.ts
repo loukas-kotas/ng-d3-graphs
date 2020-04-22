@@ -1,10 +1,11 @@
-import { Component, ElementRef, HostListener, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import {Component, ElementRef, HostListener, Input, OnInit, ViewEncapsulation} from '@angular/core';
 import * as d3 from 'd3';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {debounceTime} from 'rxjs/operators';
 
-import { GraphOptions } from '../shared/models/graph-options.interface';
-import { ViewBox } from '../shared/models/viewbox.interface';
+import {GraphOptions} from '../shared/models/graph-options.interface';
+import {ViewBox} from '../shared/models/viewbox.interface';
+import {D3Service} from '../shared/services/d3.service';
 
 interface LabelsAndData {
   x: any;
@@ -41,7 +42,7 @@ export class MultilineComponent implements OnInit {
     height: 804,
     yAxisLabel: '',
     xAxisLabel: '',
-    margin: { top: 50, right: 50, bottom: 50, left: 50 },
+    margin: {top: 50, right: 50, bottom: 50, left: 50},
   };
 
   onResize$ = new Subject<void>();
@@ -50,14 +51,18 @@ export class MultilineComponent implements OnInit {
     this.onResize$.next();
   }
 
-  constructor(private container: ElementRef) {}
+  constructor(
+      private container: ElementRef,
+      private d3Service: D3Service,
+  ) {}
 
   ngOnInit() {
-    this.options = { ...this._options, ...this.options };
+    this.options = {...this._options, ...this.options};
     this.viewBox = {
       minX: -this.options.margin.left,
       minY: -25,
-      width: this.options.width + this.options.margin.left + this.options.margin.right,
+      width: this.options.width + this.options.margin.left +
+          this.options.margin.right,
       height: this.options.height + this.options.margin.top,
     };
 
@@ -78,17 +83,23 @@ export class MultilineComponent implements OnInit {
     const result = [];
     const N = this.data.length;
     for (let index = 0; index < N; index++) {
-      result.push({ x: this.labels, y: this.data[index] });
+      result.push({x: this.labels, y: this.data[index]});
     }
     return result;
   }
 
   render(): void {
-    const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
-    const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
+    const currentWidth = parseInt(
+        d3.select(this.container.nativeElement).select('div').style('width'),
+        10);
+    const currentHeight = parseInt(
+        d3.select(this.container.nativeElement).select('div').style('height'),
+        10);
 
-    const width = this.options.width - this.options.margin.left - this.options.margin.right;
-    const height = this.options.height - this.options.margin.top - this.options.margin.bottom;
+    const width = this.options.width - this.options.margin.left -
+        this.options.margin.right;
+    const height = this.options.height - this.options.margin.top -
+        this.options.margin.bottom;
 
     this.viewBox = {
       minX: -this.options.margin.left,
@@ -97,68 +108,75 @@ export class MultilineComponent implements OnInit {
       height: this.options.height - this.options.margin.top,
     };
 
-    const svg = d3
-      .select(this.container.nativeElement)
-      .select('div')
-      .append('svg')
-      .attr('width', currentWidth)
-      .attr('height', currentHeight)
-      .attr('viewBox', `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`)
-      .classed('svg-content', true)
-      .append('g');
+    const svg = d3.select(this.container.nativeElement)
+                    .select('div')
+                    .append('svg')
+                    .attr('width', currentWidth)
+                    .attr('height', currentHeight)
+                    .attr(
+                        'viewBox',
+                        `${this.viewBox.minX} ${this.viewBox.minY} ${
+                            this.viewBox.width} ${this.viewBox.height}`)
+                    .classed('svg-content', true)
+                    .append('g');
 
     const xDomain = this.getXdomain();
     const x = d3.scaleTime().domain(xDomain).range([0, width]);
 
-    const y = d3
-      .scaleLinear()
-      .domain([0, d3.max(this.data, (d) => d3.max(d.values))])
-      .range([height, 0])
-      .nice();
+    const y = d3.scaleLinear()
+                  .domain([0, d3.max(this.data, (d) => d3.max(d.values))])
+                  .range([height, 0])
+                  .nice();
 
-    const xAxis = (g) => g.attr('transform', `translate(0,${height})`).call(d3.axisBottom(x));
+    const xAxis = (g) =>
+        g.attr('transform', `translate(0,${height})`).call(d3.axisBottom(x));
 
     const yAxis = (g) => g.call(d3.axisLeft(y));
 
-    const line = d3
-      .line<any>()
-      .defined((d) => !isNaN(d))
-      .x((d, i) => x(this.labels[i]))
-      .y((d) => y(d));
+    const line = d3.line<any>()
+                     .defined((d) => !isNaN(d))
+                     .x((d, i) => x(this.labels[i]))
+                     .y((d) => y(d));
 
     // add the X gridlines
-    svg.append('g').attr('class', 'grid').call(
-      this.make_x_gridlines(x).tickSize(height)
-      // .tickFormat('')
-    );
+    svg.append('g')
+        .attr('class', 'grid')
+        .call(
+            this.make_x_gridlines(x).tickSize(height)
+            // .tickFormat('')
+        );
 
     // add the Y gridlines
-    svg.append('g').attr('class', 'grid').call(
-      this.make_y_gridlines(y).tickSize(-width)
-      // .tickFormat('')
-    );
+    svg.append('g')
+        .attr('class', 'grid')
+        .call(
+            this.make_y_gridlines(y).tickSize(-width)
+            // .tickFormat('')
+        );
 
-    svg.append('g').call(xAxis);
-    svg.append('g').call(yAxis);
+    const _xAxis = svg.append('g').call(xAxis);
+    const _yAxis = svg.append('g').call(yAxis);
 
     // text label for the x axis
     this.addLabelAxisX(svg, width, height);
     // text label for the y axis
     this.addLabelAxisY(svg, height);
 
-    const path = svg
-      .append('g')
-      .attr('fill', 'none')
-      .attr('stroke', 'steelblue')
-      .attr('stroke-width', 1.5)
-      .attr('stroke-linejoin', 'round')
-      .attr('stroke-linecap', 'round')
-      .selectAll('path')
-      .data(this.data)
-      .join('path')
-      .style('mix-blend-mode', 'multiply')
-      .attr('d', (d) => line(d.values))
-      .text('this is ');
+    const path = svg.append('g')
+                     .attr('fill', 'none')
+                     .attr('stroke', 'steelblue')
+                     .attr('stroke-width', 1.5)
+                     .attr('stroke-linejoin', 'round')
+                     .attr('stroke-linecap', 'round')
+                     .selectAll('path')
+                     .data(this.data)
+                     .join('path')
+                     .style('mix-blend-mode', 'multiply')
+                     .attr('d', (d) => line(d.values))
+                     .text('this is ');
+
+    this.removeAxisTicks(_xAxis);
+    this.removeAxisTicks(_yAxis);
 
     // TODO: comment in when issue #61 is fixed
     /* svg.call(hover, path, this);
@@ -215,24 +233,34 @@ export class MultilineComponent implements OnInit {
     */
   }
 
-  private addLabelAxisY(svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number) {
-    svg
-      .append('text')
-      .attr('transform', 'rotate(0)')
-      .attr('y', 0 - this.options.margin.top / 2)
-      .attr('x', 0)
-      .attr('dy', '1em')
-      .style('text-anchor', 'start')
-
-      .text(this.options.yAxisLabel);
+  private removeAxisTicks(
+      axis: d3.Selection<SVGGElement, unknown, null, undefined>) {
+    this.d3Service.removeAxisTicks(axis);
   }
 
-  private addLabelAxisX(svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number, height: number) {
-    svg
-      .append('text')
-      .attr('transform', 'translate(' + width / 2 + ' ,' + (height + this.options.margin.top - 15) + ')')
-      .style('text-anchor', 'middle')
-      .text(this.options.xAxisLabel);
+  private addLabelAxisY(
+      svg: d3.Selection<SVGGElement, unknown, null, undefined>,
+      height: number) {
+    svg.append('text')
+        .attr('transform', 'rotate(0)')
+        .attr('y', 0 - this.options.margin.top / 2)
+        .attr('x', 0)
+        .attr('dy', '1em')
+        .style('text-anchor', 'start')
+
+        .text(this.options.yAxisLabel);
+  }
+
+  private addLabelAxisX(
+      svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number,
+      height: number) {
+    svg.append('text')
+        .attr(
+            'transform',
+            'translate(' + width / 2 + ' ,' +
+                (height + this.options.margin.top - 15) + ')')
+        .style('text-anchor', 'middle')
+        .text(this.options.xAxisLabel);
   }
 
   private getXdomain(): Date[] {

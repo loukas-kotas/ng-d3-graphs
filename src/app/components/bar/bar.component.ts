@@ -6,6 +6,7 @@ import {debounceTime} from 'rxjs/operators';
 import {Axis} from '../shared/models/axis.interface';
 import {GraphOptions} from '../shared/models/graph-options.interface';
 import {ViewBox} from '../shared/models/viewbox.interface';
+import {D3Service} from '../shared/services/d3.service';
 
 import {BarService} from './bar.service';
 
@@ -79,7 +80,10 @@ export class BarComponent implements OnInit {
     this.onResize$.next();
   }
 
-  constructor(private container: ElementRef) {}
+  constructor(
+      private container: ElementRef,
+      private d3Service: D3Service,
+  ) {}
 
   ngOnInit() {
     this.options = {...this._options, ...this.options};
@@ -177,15 +181,23 @@ export class BarComponent implements OnInit {
           return height - y(Number(d.y));
         });
 
-    svg.append('g').call(xAxis);
+    const _xAxis = svg.append('g').call(xAxis);
 
     // text label for the x axis
     this.addLabelAxisX(svg, width, height);
 
-    svg.append('g').call(yAxis);
+    const _yAxis = svg.append('g').call(yAxis);
 
     // text label for the y axis
     this.addLabelAxisY(svg, height);
+
+    this.removeAxisTicks(_xAxis);
+    this.removeAxisTicks(_yAxis);
+  }
+
+  private removeAxisTicks(
+      axis: d3.Selection<SVGGElement, unknown, null, undefined>) {
+    this.d3Service.removeAxisTicks(axis);
   }
 
   private addLabelAxisY(
