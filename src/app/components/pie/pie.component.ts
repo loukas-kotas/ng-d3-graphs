@@ -165,8 +165,6 @@ export class PieComponent implements OnInit {
   }
 
   private addLabelAxisX(svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number, height: number) {
-    console.log('jjjjj');
-    console.log(this.options.xAxisLabel);
     svg
       .append('text')
       .attr('transform', `translate(${0}, ${this.options.margin.top * 2.5})`)
