@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import {Subject} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
 
+import {axisConfig} from '../shared/config/axis.config';
 import {Axis} from '../shared/models/axis.interface';
 import {GraphOptions} from '../shared/models/graph-options.interface';
 import {ViewBox} from '../shared/models/viewbox.interface';
@@ -193,7 +194,16 @@ export class BarComponent implements OnInit {
 
     this.removeAxisTicks(_xAxis);
     this.removeAxisTicks(_yAxis);
+
+    this.changeAxisColor(_xAxis, axisConfig);
+    this.changeAxisColor(_yAxis, axisConfig);
   }
+
+  private changeAxisColor(
+      axis: d3.Selection<SVGGElement, unknown, null, undefined>, config: any) {
+    this.d3Service.changeAxisColor(axis, config);
+  }
+
 
   private removeAxisTicks(
       axis: d3.Selection<SVGGElement, unknown, null, undefined>) {

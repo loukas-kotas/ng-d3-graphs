@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import {Subject} from 'rxjs';
 import {debounceTime} from 'rxjs/operators';
 
+import {axisConfig} from '../shared/config/axis.config';
 import {GraphOptions} from '../shared/models/graph-options.interface';
 import {ViewBox} from '../shared/models/viewbox.interface';
 import {D3Service} from '../shared/services/d3.service';
@@ -178,6 +179,9 @@ export class MultilineComponent implements OnInit {
     this.removeAxisTicks(_xAxis);
     this.removeAxisTicks(_yAxis);
 
+    this.changeAxisColor(_xAxis, axisConfig);
+    this.changeAxisColor(_yAxis, axisConfig);
+
     // TODO: comment in when issue #61 is fixed
     /* svg.call(hover, path, this);
 
@@ -231,6 +235,11 @@ export class MultilineComponent implements OnInit {
       }
     }
     */
+  }
+
+  private changeAxisColor(
+      axis: d3.Selection<SVGGElement, unknown, null, undefined>, config: any) {
+    this.d3Service.changeAxisColor(axis, config);
   }
 
   private removeAxisTicks(
