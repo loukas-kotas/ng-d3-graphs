@@ -101,8 +101,6 @@ export class MultilineComponent implements OnInit {
       .select(this.container.nativeElement)
       .select('div')
       .append('svg')
-      // TODO: delete me
-      // .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('width', currentWidth)
       .attr('height', currentHeight)
       .attr('viewBox', `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`)

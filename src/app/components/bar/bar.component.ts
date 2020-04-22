@@ -1,11 +1,13 @@
-import { Component, OnInit, Input, ChangeDetectionStrategy, ViewEncapsulation, ElementRef, HostListener } from '@angular/core';
-import { GraphOptions } from '../shared/models/graph-options.interface';
+import {ChangeDetectionStrategy, Component, ElementRef, HostListener, Input, OnInit, ViewEncapsulation,} from '@angular/core';
 import * as d3 from 'd3';
-import { Axis } from '../shared/models/axis.interface';
-import { BarService } from './bar.service';
-import { ViewBox } from '../shared/models/viewbox.interface';
-import { Subject } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import {Subject} from 'rxjs';
+import {debounceTime} from 'rxjs/operators';
+
+import {Axis} from '../shared/models/axis.interface';
+import {GraphOptions} from '../shared/models/graph-options.interface';
+import {ViewBox} from '../shared/models/viewbox.interface';
+
+import {BarService} from './bar.service';
 
 export interface Bar {
   labels: any[];
@@ -65,7 +67,7 @@ export class BarComponent implements OnInit {
   private _options: BarOptions = {
     width: 879,
     height: 804,
-    margin: { top: 50, right: 50, bottom: 50, left: 50 },
+    margin: {top: 50, right: 50, bottom: 50, left: 50},
     gridTicks: 0,
   };
 
@@ -77,15 +79,15 @@ export class BarComponent implements OnInit {
     this.onResize$.next();
   }
 
-
   constructor(private container: ElementRef) {}
 
   ngOnInit() {
-    this.options =  {...this._options, ...this.options};
+    this.options = {...this._options, ...this.options};
     this.viewBox = {
       minX: -this.options.margin.left,
       minY: -10,
-      width: this.options.width + this.options.margin.left + this.options.margin.right,
+      width: this.options.width + this.options.margin.left +
+          this.options.margin.right,
       height: this.options.height + this.options.margin.top,
     };
     this.labelsAndData = this.combineLabelsDataToOne();
@@ -96,12 +98,17 @@ export class BarComponent implements OnInit {
   }
 
   private render() {
+    const currentWidth = parseInt(
+        d3.select(this.container.nativeElement).select('div').style('width'),
+        10);
+    const currentHeight = parseInt(
+        d3.select(this.container.nativeElement).select('div').style('height'),
+        10);
 
-    const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
-    const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
-
-    const width = this.options.width - this.options.margin.left - this.options.margin.right;
-    const height = this.options.height - this.options.margin.top - this.options.margin.bottom;
+    const width = this.options.width - this.options.margin.left -
+        this.options.margin.right;
+    const height = this.options.height - this.options.margin.top -
+        this.options.margin.bottom;
     this.viewBox = {
       minX: -this.options.margin.left,
       minY: -10,
@@ -109,70 +116,66 @@ export class BarComponent implements OnInit {
       height: this.options.height - this.options.margin.top,
     };
 
-    const svg = d3
-      .select(this.container.nativeElement)
-      .select('div')
-      .append('svg')
-      // TODO: delete me
-      // .attr('preserveAspectRatio', 'xMinYMin meet')
-      .attr('width', currentWidth)
-      .attr('height', currentHeight)
+    const svg = d3.select(this.container.nativeElement)
+                    .select('div')
+                    .append('svg')
+                    .attr('width', currentWidth)
+                    .attr('height', currentHeight)
 
-      .attr(
-        'viewBox',
-        `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
-      )
-      .classed('svg-content', true)
-      .append('g');
+                    .attr(
+                        'viewBox',
+                        `${this.viewBox.minX} ${this.viewBox.minY} ${
+                            this.viewBox.width} ${this.viewBox.height}`)
+                    .classed('svg-content', true)
+                    .append('g');
 
-    const x = d3
-      .scaleBand()
-      .rangeRound([0, width])
-      .padding(0.1)
-      .domain(this.labels);
+    const x =
+        d3.scaleBand().rangeRound([0, width]).padding(0.1).domain(this.labels);
 
-    const y = d3
-      .scaleLinear()
-      .rangeRound([height, 0])
-      .domain([0, Math.max(...this.data.map((d) => Number(d)))]);
+    const y = d3.scaleLinear().rangeRound([height, 0]).domain([
+      0, Math.max(...this.data.map((d) => Number(d)))
+    ]);
 
-    const xAxis = (g) =>
-      g
-        .call(d3.axisBottom(x))
-        .attr('transform', 'translate(0,' + height + ')');
+    const xAxis = (g) => g.call(d3.axisBottom(x))
+                             .attr('transform', 'translate(0,' + height + ')');
 
-    const yAxis = (g) =>
-      g
-        .call(d3.axisLeft(y));
+    const yAxis = (g) => g.call(d3.axisLeft(y));
 
     // add the X gridlines
-    svg.append('g').attr('class', 'grid').call(
-      this.make_x_gridlines(x).tickSize(height)
-      // .tickFormat('')
-    );
+    svg.append('g')
+        .attr('class', 'grid')
+        .call(
+            this.make_x_gridlines(x).tickSize(height)
+            // .tickFormat('')
+        );
 
     // add the Y gridlines
-    svg.append('g').attr('class', 'grid').call(
-      this.make_y_gridlines(y).tickSize(-width)
-      // .tickFormat('')
-    );
+    svg.append('g')
+        .attr('class', 'grid')
+        .call(
+            this.make_y_gridlines(y).tickSize(-width)
+            // .tickFormat('')
+        );
 
-    svg
-      .selectAll('.bar')
-      .data(this.labelsAndData)
-      .enter()
-      .append('rect')
-      .attr('class', 'bar')
-      .attr('x', (d) => {
-        return x(d.x);
-      })
-      .attr('y', (d) => {
-        return y(Number(d.y));
-      })
-      .attr('width', x.bandwidth())
-      .attr('height', (d) => {
-        return height - y(Number(d.y));
-      });
+    svg.selectAll('.bar')
+        .data(this.labelsAndData)
+        .enter()
+        .append('rect')
+        .attr('class', 'bar')
+        .attr(
+            'x',
+            (d) => {
+              return x(d.x);
+            })
+        .attr(
+            'y',
+            (d) => {
+              return y(Number(d.y));
+            })
+        .attr('width', x.bandwidth())
+        .attr('height', (d) => {
+          return height - y(Number(d.y));
+        });
 
     svg.append('g').call(xAxis);
 
@@ -183,33 +186,37 @@ export class BarComponent implements OnInit {
 
     // text label for the y axis
     this.addLabelAxisY(svg, height);
-
   }
 
-  private addLabelAxisY(svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number) {
+  private addLabelAxisY(
+      svg: d3.Selection<SVGGElement, unknown, null, undefined>,
+      height: number) {
     svg.append('text')
-      .attr('transform', 'rotate(0)')
-      .attr('y', 0 - this.options.margin.top / 2)
-      .attr('x', 0)
-      .attr('dy', '1em')
-      .style('text-anchor', 'start')
-      .text(this.options.yAxisLabel);
+        .attr('transform', 'rotate(0)')
+        .attr('y', 0 - this.options.margin.top / 2)
+        .attr('x', 0)
+        .attr('dy', '1em')
+        .style('text-anchor', 'start')
+        .text(this.options.yAxisLabel);
   }
 
-  private addLabelAxisX(svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number, height: number) {
-    svg
-      .append('text')
-      .attr('transform', 'translate(' + width / 2 + ' ,' + (height + this.options.margin.top - 15) + ')')
-      .style('text-anchor', 'middle')
-      .text(this.options.xAxisLabel);
+  private addLabelAxisX(
+      svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number,
+      height: number) {
+    svg.append('text')
+        .attr(
+            'transform',
+            'translate(' + width / 2 + ' ,' +
+                (height + this.options.margin.top - 15) + ')')
+        .style('text-anchor', 'middle')
+        .text(this.options.xAxisLabel);
   }
-
 
   private combineLabelsDataToOne(): LabelsAndData[] {
     const result = [];
     const N = this.data.length;
     for (let index = 0; index < N; index++) {
-      result.push({ x: this.labels[index], y: this.data[index] });
+      result.push({x: this.labels[index], y: this.data[index]});
     }
     return result;
   }
@@ -224,12 +231,11 @@ export class BarComponent implements OnInit {
   }
 
   onResizeEvent(): void {
-    this.onResize$
-    .pipe(
-      debounceTime(200)
-    ).subscribe(() => {
+    this.onResize$.pipe(debounceTime(200)).subscribe(() => {
       const svgExist = d3.select(this.container.nativeElement).select('svg');
-      if (svgExist) { svgExist.remove(); }
+      if (svgExist) {
+        svgExist.remove();
+      }
       this.render();
     });
   }

@@ -95,27 +95,11 @@ export class PieComponent implements OnInit {
     const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
     const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
 
-    // const width =
-    //   this.options.width - this.options.margin.left -
-    //   this.options.margin.right;
-    // const height =
-    //   this.options.height -
-    //   this.options.margin.top -
-    //   this.options.margin.bottom;
-    // this.viewBox = {
-    //   minX: -this.options.margin.left,
-    //   minY: -25,
-    //   width: this.options.width,
-    //   height: this.options.height - this.options.margin.top,
-    // };
-
     const radius = Math.min(this.options.width, this.options.height) / 2 - this.options.margin.top;
     const svg = d3
       .select(this.container.nativeElement)
       .select('div')
       .append('svg')
-      // TODO: delete me
-      // .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('width', currentWidth)
       .attr('height', currentHeight)
       .attr('viewBox', `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`)

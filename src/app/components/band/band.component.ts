@@ -1,10 +1,11 @@
-import { Component, OnInit, Input, ViewEncapsulation, ElementRef, HostListener } from '@angular/core';
-import { GraphOptions } from '../shared/models/graph-options.interface';
+import { Component, ElementRef, HostListener, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import * as d3 from 'd3';
 import { ScaleTime } from 'd3';
-import { ViewBox } from '../shared/models/viewbox.interface';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+
+import { GraphOptions } from '../shared/models/graph-options.interface';
+import { ViewBox } from '../shared/models/viewbox.interface';
 import { D3Service } from '../shared/services/d3.service';
 
 interface LabelsAndData {
@@ -35,7 +36,7 @@ export class BandComponent implements OnInit {
     height: 804,
     margin: { top: 50, right: 50, bottom: 50, left: 50 },
     yAxisLabel: '',
-    gridTicks: 0
+    gridTicks: 0,
   };
 
   onResize$ = new Subject<void>();
@@ -44,13 +45,10 @@ export class BandComponent implements OnInit {
     this.onResize$.next();
   }
 
-  constructor(
-    private container: ElementRef,
-    private d3Service: D3Service,
-  ) { }
+  constructor(private container: ElementRef, private d3Service: D3Service) {}
 
   ngOnInit() {
-    this.options =  {...this._options, ...this.options};
+    this.options = { ...this._options, ...this.options };
     this.viewBox = {
       minX: -this.options.margin.left,
       minY: -10,
@@ -83,7 +81,6 @@ export class BandComponent implements OnInit {
   }
 
   private render() {
-
     const currentWidth = parseInt(d3.select(this.container.nativeElement).select('div').style('width'), 10);
     const currentHeight = parseInt(d3.select(this.container.nativeElement).select('div').style('height'), 10);
 
@@ -100,28 +97,20 @@ export class BandComponent implements OnInit {
       .select(this.container.nativeElement)
       .select('div')
       .append('svg')
-      // TODO: delete me
-      // .attr('preserveAspectRatio', 'xMinYMin meet')
       .attr('width', currentWidth)
       .attr('height', currentHeight)
-      .attr(
-        'viewBox',
-        `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`
-      )
+      .attr('viewBox', `${this.viewBox.minX} ${this.viewBox.minY} ${this.viewBox.width} ${this.viewBox.height}`)
       .classed('svg-content', true)
       .append('g');
 
     const x: ScaleTime<any, any> = d3
       .scaleTime()
-      .domain(d3.extent(this.labels, d => new Date(d)))
+      .domain(d3.extent(this.labels, (d) => new Date(d)))
       .range([0, width]);
 
     const y = d3
       .scaleLinear()
-      .domain([
-        d3.min(this.data, (d) => d.low),
-        d3.max(this.data, (d) => d.high),
-      ])
+      .domain([d3.min(this.data, (d) => d.low), d3.max(this.data, (d) => d.high)])
       .nice(this.options.gridTicks)
       .range([height, 0]);
 
@@ -137,21 +126,9 @@ export class BandComponent implements OnInit {
       // .tickFormat('')
     );
 
+    const xAxis = (g) => g.attr('transform', `translate(0,${height})`).attr('opacity', '1').call(d3.axisBottom(x));
 
-    const xAxis = (g) =>
-      g
-        .attr('transform', `translate(0,${height})`)
-        .attr('opacity', '1')
-        .call(
-          d3
-            .axisBottom(x)
-        );
-
-
-    const yAxis = (g) =>
-      g
-        .attr('transform', `translate(${0},0)`)
-        .call(d3.axisLeft(y));
+    const yAxis = (g) => g.attr('transform', `translate(${0},0)`).call(d3.axisLeft(y));
 
     const curve: any = d3.curveStep;
     const area = d3
@@ -171,16 +148,12 @@ export class BandComponent implements OnInit {
     // text label for the y axis
     this.addLabelAxisY(svg, height);
 
-    svg
-      .append('path')
-      .datum(this.labelsAndData)
-      .attr('fill', 'steelblue')
-      .attr('d', area);
-
+    svg.append('path').datum(this.labelsAndData).attr('fill', 'steelblue').attr('d', area);
   }
 
   private addLabelAxisY(svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number) {
-    svg.append('text')
+    svg
+      .append('text')
       .attr('transform', 'rotate(0)')
       .attr('y', 0 - this.options.margin.top / 2)
       .attr('x', 0)
@@ -208,15 +181,12 @@ export class BandComponent implements OnInit {
   }
 
   onResizeEvent(): void {
-    this.onResize$
-    .pipe(
-      debounceTime(200)
-    ).subscribe(() => {
+    this.onResize$.pipe(debounceTime(200)).subscribe(() => {
       const svgExist = d3.select(this.container.nativeElement).select('svg');
-      if (svgExist) { svgExist.remove(); }
+      if (svgExist) {
+        svgExist.remove();
+      }
       this.render();
     });
   }
-
-
 }
