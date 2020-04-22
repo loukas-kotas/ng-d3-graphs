@@ -2,7 +2,6 @@
 
 [![npm](https://img.shields.io/npm/v/ng-d3-graphs.svg?maxAge=2592000?style=flat-square)](https://www.npmjs.com/package/ng-d3-graphs)
 [![Build Status](https://travis-ci.org/loukas-kotas/ng-d3-graphs.svg?branch=master)](https://travis-ci.org/loukas-kotas/ng-d3-graphs)
-[![GitHub contributors](https://img.shields.io/github/contributors/loukas-kotas/ng-d3-graphs)](https://github.com/loukas-kotas/ng-d3-graphs/graphs/contributors)
 [![Chat Status](https://img.shields.io/badge/chat-discord-blueviolet)](https://discord.gg/XADUuqQ)
 
 # NgD3-Graphs
