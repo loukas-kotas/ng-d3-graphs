@@ -2,7 +2,7 @@
 
 <!-- // TODO: comment in when issue #96 is done.
 <ng-area [labels]="area.labels" [data]=area.data></ng-area> -->
-<!--
+
 <div class="container">
   <div class="line-container">
     <ng-line [labels]="line.labels" [data]="line.data" [options]="line.options"></ng-line>
@@ -23,10 +23,12 @@
 
 <div class="container">
   <div class="line-container">
-    <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="pie.options"></ng-pie>
+    <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="pie.options">
+    </ng-pie>
   </div>
   <div class="line-container">
-    <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="pie.options"></ng-pie>
+    <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="pie.options">
+    </ng-pie>
   </div>
 </div>
 
@@ -46,18 +48,19 @@
   <div class="line-container">
     <ng-band [labels]="band.labels" [data]="band.data" [options]="band.options"></ng-band>
   </div>
-</div> -->
+</div>
 
 <div class="solo-container">
   <ng-line [labels]="line.labels" [data]="line.data" [options]="line.options"></ng-line>
 </div>
-<!--
+
 <div class="solo-container">
   <ng-bar [labels]="bar.labels" [data]="bar.data" [options]="bar.options"></ng-bar>
 </div>
 
 <div class="solo-container">
-  <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="pie.options"></ng-pie>
+  <ng-pie [labels]="pie.labels" [data]="pie.data" [backgroundColors]="pie.backgroundColors" [options]="pie.options">
+  </ng-pie>
 </div>
 
 <div class="solo-container">
@@ -67,7 +70,7 @@
 <div class="solo-container">
   <ng-multiline [labels]="multiline.labels" [data]="multiline.data" [options]="multiline.options"></ng-multiline>
 </div>
- -->
+
 
 
 <!-- NOTE: comment in when #108 is resolved -->
