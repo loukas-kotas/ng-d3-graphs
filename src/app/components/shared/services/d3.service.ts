@@ -106,6 +106,17 @@ export class D3Service {
         .attr('stroke-width', config.strokeWidth);
   }
 
+  getXaxisTime(
+      svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number,
+      x: d3.ScaleTime<number, number>, timeFormat: string, xAxisTicks: number) {
+    return svg.append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(x)
+                  .tickFormat(d3.timeFormat(timeFormat))
+                  .ticks(xAxisTicks));
+  }
+
+
 
   // =============
 }
