@@ -41,7 +41,12 @@ export class LineComponent implements OnInit {
     gridTicks: 0,
     yAxisLabel: '',
     xAxisLabel: '',
+    timeFormat: axisConfig.xAxisTimeFormat,
+    xAxisTicks: axisConfig.xAxisTicks,
   };
+
+  parseTime = d3.timeParse('%d-%b-%y');
+  formatTime = d3.timeFormat(this.options.timeFormat);
 
   private viewBox: ViewBox = {} as ViewBox;
 
@@ -60,9 +65,7 @@ export class LineComponent implements OnInit {
     this.options = {...this._options, ...this.options};
     this.viewBox = this.d3Service.getViewBoxDefault(this.options);
 
-    const parseTime = d3.timeParse('%d-%b-%y');
-
-    this.labels = this.labels.map((d) => parseTime(d));
+    this.labels = this.labels.map(d => this.parseTime(d));
 
     this.labelsAndData = this.combineLabelsDataToOne();
 
@@ -106,7 +109,7 @@ export class LineComponent implements OnInit {
     const y = d3.scaleLinear().range([height, 0]).nice();
     const valueline = d3.line<any>().x((d) => x(d.x)).y((d) => y(d.y));
 
-    x.domain(d3.extent(this.labels, (d) => d));
+    x.domain(d3.extent(this.labels, (d) => (d)));
     y.domain([0, d3.max(this.data, (d) => d)]);
 
     // add the X gridlines
@@ -131,9 +134,9 @@ export class LineComponent implements OnInit {
         .attr('d', valueline);
 
     // add the X Axis
-    const xAxis = svg.append('g')
-                      .attr('transform', 'translate(0,' + height + ')')
-                      .call(d3.axisBottom(x));
+    const xAxis = this.getXaxisTime(
+        svg, height, x, this.options.timeFormat, this.options.xAxisTicks);
+
 
     // text label for the x axis
     this.addLabelAxisX(svg, width, height);
@@ -149,6 +152,16 @@ export class LineComponent implements OnInit {
 
     this.changeAxisColor(xAxis, axisConfig);
     this.changeAxisColor(yAxis, axisConfig);
+  }
+
+  private getXaxisTime(
+      svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number,
+      x: d3.ScaleTime<number, number>, timeFormat: string, xAxisTicks: number) {
+    return svg.append('g')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(d3.axisBottom(x)
+                  .tickFormat(d3.timeFormat(timeFormat))
+                  .ticks(xAxisTicks));
   }
 
   private changeAxisColor(
