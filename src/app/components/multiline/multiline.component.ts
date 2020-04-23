@@ -44,7 +44,13 @@ export class MultilineComponent implements OnInit {
     yAxisLabel: '',
     xAxisLabel: '',
     margin: {top: 50, right: 50, bottom: 50, left: 50},
+    timeParser: axisConfig.xAxisTimeParser,
+    timeFormat: axisConfig.xAxisTimeFormat,
+    xAxisTicks: axisConfig.xAxisTicks,
   };
+
+  parseTime = d3.timeParse(this.options.timeParser);
+  formatTime = d3.timeFormat(this.options.timeFormat);
 
   onResize$ = new Subject<void>();
   @HostListener('window:resize')
@@ -67,7 +73,11 @@ export class MultilineComponent implements OnInit {
       height: this.options.height + this.options.margin.top,
     };
 
-    [this.labels] = this.formatData();
+    this.parseTime = d3.timeParse(this.options.timeParser);
+    this.formatTime = d3.timeFormat(this.options.timeFormat);
+
+
+    this.labels = this.formatData();
     this.labelsAndData = this.combineLabelsDataToOne();
 
     this.onResizeEvent();
@@ -76,8 +86,7 @@ export class MultilineComponent implements OnInit {
   }
 
   private formatData() {
-    const labels = this.labels.map((d) => new Date(d));
-    return [labels];
+    return this.labels.map(d => this.parseTime(d));
   }
 
   private combineLabelsDataToOne(): LabelsAndData[] {
@@ -129,8 +138,12 @@ export class MultilineComponent implements OnInit {
                   .range([height, 0])
                   .nice();
 
-    const xAxis = (g) =>
-        g.attr('transform', `translate(0,${height})`).call(d3.axisBottom(x));
+    // const xAxis = (g) =>
+    //     g.attr('transform', `translate(0,${height})`).call(d3.axisBottom(x));
+
+    const xAxis = this.d3Service.getXaxisTime(
+        svg, height, x, this.options.timeFormat, this.options.xAxisTicks);
+
 
     const yAxis = (g) => g.call(d3.axisLeft(y));
 
@@ -155,7 +168,6 @@ export class MultilineComponent implements OnInit {
             // .tickFormat('')
         );
 
-    const _xAxis = svg.append('g').call(xAxis);
     const _yAxis = svg.append('g').call(yAxis);
 
     // text label for the x axis
@@ -176,10 +188,10 @@ export class MultilineComponent implements OnInit {
                      .attr('d', (d) => line(d.values))
                      .text('this is ');
 
-    this.removeAxisTicks(_xAxis);
+    this.removeAxisTicks(xAxis);
     this.removeAxisTicks(_yAxis);
 
-    this.changeAxisColor(_xAxis, axisConfig);
+    this.changeAxisColor(xAxis, axisConfig);
     this.changeAxisColor(_yAxis, axisConfig);
 
     // TODO: comment in when issue #61 is fixed

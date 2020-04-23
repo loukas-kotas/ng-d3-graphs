@@ -111,6 +111,7 @@ export class AppComponent implements OnInit {
       yAxisLabel: multilineData.data.y,
       gridTicks: 10,
       xAxisLabel: 'Time',
+      timeFormat: '%d/%m/%Y',
     };
     return {
       labels,
