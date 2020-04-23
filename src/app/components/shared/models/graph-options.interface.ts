@@ -5,6 +5,7 @@ export interface GraphOptions {
   yAxisLabel?: string;
   xAxisLabel?: string;
   xAxisTicks?: number;
+  timeParser?: string;
   timeFormat?: string;
 }
 

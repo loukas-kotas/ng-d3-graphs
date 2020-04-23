@@ -41,11 +41,12 @@ export class LineComponent implements OnInit {
     gridTicks: 0,
     yAxisLabel: '',
     xAxisLabel: '',
+    timeParser: axisConfig.xAxisTimeParser,
     timeFormat: axisConfig.xAxisTimeFormat,
     xAxisTicks: axisConfig.xAxisTicks,
   };
 
-  parseTime = d3.timeParse('%d-%b-%y');
+  parseTime = d3.timeParse(this.options.timeParser);
   formatTime = d3.timeFormat(this.options.timeFormat);
 
   private viewBox: ViewBox = {} as ViewBox;
@@ -64,6 +65,10 @@ export class LineComponent implements OnInit {
   ngOnInit() {
     this.options = {...this._options, ...this.options};
     this.viewBox = this.d3Service.getViewBoxDefault(this.options);
+
+    this.parseTime = d3.timeParse(this.options.timeParser);
+    this.formatTime = d3.timeFormat(this.options.timeFormat);
+
 
     this.labels = this.labels.map(d => this.parseTime(d));
 

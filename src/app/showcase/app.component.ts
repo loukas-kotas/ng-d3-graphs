@@ -45,6 +45,7 @@ export class AppComponent implements OnInit {
         gridTicks: 10,
         xAxisLabel: 'Date (days)',
         yAxisLabel: 'Value (Watt)',
+        timeParser: '%d-%b-%y',
         // timeFormat: '%d-%b-%y',
         xAxisTicks: 6,
       },
