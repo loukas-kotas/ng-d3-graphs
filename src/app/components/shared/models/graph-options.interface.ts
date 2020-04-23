@@ -4,6 +4,9 @@ export interface GraphOptions {
   margin?: Margin;
   yAxisLabel?: string;
   xAxisLabel?: string;
+  xAxisTicks?: number;
+  timeParser?: string;
+  timeFormat?: string;
 }
 
 export interface Margin {
