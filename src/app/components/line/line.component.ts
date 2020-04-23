@@ -139,7 +139,7 @@ export class LineComponent implements OnInit {
         .attr('d', valueline);
 
     // add the X Axis
-    const xAxis = this.getXaxisTime(
+    const xAxis = this.d3Service.getXaxisTime(
         svg, height, x, this.options.timeFormat, this.options.xAxisTicks);
 
 
@@ -157,16 +157,6 @@ export class LineComponent implements OnInit {
 
     this.changeAxisColor(xAxis, axisConfig);
     this.changeAxisColor(yAxis, axisConfig);
-  }
-
-  private getXaxisTime(
-      svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number,
-      x: d3.ScaleTime<number, number>, timeFormat: string, xAxisTicks: number) {
-    return svg.append('g')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(d3.axisBottom(x)
-                  .tickFormat(d3.timeFormat(timeFormat))
-                  .ticks(xAxisTicks));
   }
 
   private changeAxisColor(

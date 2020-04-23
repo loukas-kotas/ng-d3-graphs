@@ -89,8 +89,13 @@ export class AppComponent implements OnInit {
     const data = bandData.data.map((d) => {
       return {high: d.high, low: d.low};
     });
-    const options: BandOptions =
-        {height: 300, yAxisLabel: 'y-band', xAxisLabel: 'x-band', gridTicks: 0};
+    const options: BandOptions = {
+      height: 300,
+      yAxisLabel: 'y-band',
+      xAxisLabel: 'x-band',
+      gridTicks: 0,
+      timeFormat: '%d/%m'
+    };
     return {
       labels,
       data,
@@ -106,6 +111,7 @@ export class AppComponent implements OnInit {
       yAxisLabel: multilineData.data.y,
       gridTicks: 10,
       xAxisLabel: 'Time',
+      timeFormat: '%d/%m/%Y',
     };
     return {
       labels,

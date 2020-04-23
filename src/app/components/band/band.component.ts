@@ -38,7 +38,13 @@ export class BandComponent implements OnInit {
     margin: {top: 50, right: 50, bottom: 50, left: 50},
     yAxisLabel: '',
     gridTicks: 0,
+    timeParser: axisConfig.xAxisTimeParser,
+    timeFormat: axisConfig.xAxisTimeFormat,
+    xAxisTicks: axisConfig.xAxisTicks,
   };
+
+  parseTime = d3.timeParse(this.options.timeParser);
+  formatTime = d3.timeFormat(this.options.timeFormat);
 
   onResize$ = new Subject<void>();
   @HostListener('window:resize')
@@ -57,6 +63,10 @@ export class BandComponent implements OnInit {
           this.options.margin.right,
       height: this.options.height + this.options.margin.top,
     };
+
+    this.parseTime = d3.timeParse(this.options.timeParser);
+    this.formatTime = d3.timeFormat(this.options.timeFormat);
+
     this.labels = this.formatLabels();
     this.labelsAndData = this.combineLabelsDataToOne();
 
@@ -66,7 +76,7 @@ export class BandComponent implements OnInit {
   }
 
   private formatLabels(): any[] {
-    return this.labels.map((d) => new Date(d));
+    return this.labels.map(d => this.parseTime(d));
   }
 
   private combineLabelsDataToOne(): LabelsAndData[] {
@@ -142,9 +152,8 @@ export class BandComponent implements OnInit {
             // .tickFormat('')
         );
 
-    const xAxis = (g) => g.attr('transform', `translate(0,${height})`)
-                             .attr('opacity', '1')
-                             .call(d3.axisBottom(x));
+    const xAxis = this.d3Service.getXaxisTime(
+        svg, height, x, this.options.timeFormat, this.options.xAxisTicks);
 
     const yAxis = (g) =>
         g.attr('transform', `translate(${0},0)`).call(d3.axisLeft(y));
@@ -156,7 +165,6 @@ export class BandComponent implements OnInit {
                      .y0((d) => y(d.low))
                      .y1((d) => y(d.high));
 
-    const _xAxis = svg.append('g').call(xAxis);
     const _yAxis = svg.append('g').call(yAxis);
 
     // this.d3Service.addLabelAxisX(svg, width, height, this.options);
@@ -171,10 +179,10 @@ export class BandComponent implements OnInit {
         .attr('fill', 'steelblue')
         .attr('d', area);
 
-    this.removeAxisTicks(_xAxis);
+    this.removeAxisTicks(xAxis);
     this.removeAxisTicks(_yAxis);
 
-    this.changeAxisColor(_xAxis, axisConfig);
+    this.changeAxisColor(xAxis, axisConfig);
     this.changeAxisColor(_yAxis, axisConfig);
   }
 
