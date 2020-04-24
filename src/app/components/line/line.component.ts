@@ -167,11 +167,9 @@ export class LineComponent implements OnInit {
     const dotRadius = 3;
     const dotColor = '#4682b4';
 
-
+    // add tootlip
     const {tooltip, tooltipRect, tooltipText, tooltipConfig} =
-        this.initTooltip();
-
-
+        this.d3Service.addTooltip(this.container);
 
     svg.selectAll('dot')
         .data(this.labelsAndData)
@@ -198,74 +196,23 @@ export class LineComponent implements OnInit {
         });
   }
 
-  private initTooltip() {
-    const tooltipConfig = {
-      width: 100,
-      height: 40,
-      fill: '#333',
-      opacity: 0.7,
-      rx: 15,
-      text: {
-        translateX: 10,
-        translateY: 20,
-      },
-    };
-    const tooltip =
-        d3.select(this.container.nativeElement).select('svg').append('g');
-    const tooltipRect = tooltip.append('rect')
-                            .attr('width', tooltipConfig.width)
-                            .attr('height', tooltipConfig.height)
-                            .attr('fill', tooltipConfig.fill)
-                            .attr('opacity', 0)
-                            .attr('rx', tooltipConfig.rx);
-    const tooltipText = tooltip.append('text').attr('transform', `translate(
-          ${tooltipConfig.text.translateX},
-          ${tooltipConfig.text.translateY})`);
-    return {tooltip, tooltipRect, tooltipText, tooltipConfig};
-  }
-
-  private onMouseOver(d, xScale, yScale, tooltip, tooltipRect, tooltipText) {
-    this.showTooltip(xScale, d, yScale, tooltip, tooltipRect, tooltipText);
+  private onMouseOver(d, xScale, yScale, tooltip?, tooltipRect?, tooltipText?) {
+    // show tooltip
+    if (tooltip) {
+      this.d3Service.showTooltip(
+          d, xScale, yScale, tooltip, tooltipRect, tooltipText,
+          this.formatTime);
+    }
   }
 
 
-  private showTooltip(
-      xScale: any, d: any, yScale: any, tooltip: any, tooltipRect: any,
-      tooltipText: any) {
-    const xPos = xScale(d.x) - 150 / 2;
-    const yPos = yScale(d.y) + 10;
-    tooltip.attr('transform', `translate(${xPos}, ${yPos})`)
-        .attr('is', true)
-        .attr('visibility', 'visible');
-    tooltipRect.attr('opacity', 0.7);
-    tooltipText.attr('tranform', 'translate(75,30)')
-        .attr('fill', 'white')
-        .attr('font-size', 10)
-        .attr('font-family', `'Roboto', 'sans-serif'`);
-    tooltipText.append('tspan')
-        .attr('text-anchor', 'middle')
-        .attr('is', true)
-        .attr('x', 25)
-        .attr('y', -5)
-        .text(`${this.formatTime(d.x)}`);
-    tooltipText.append('tspan')
-        .attr('text-anchor', 'middle')
-        .attr('is', true)
-        .attr('x', 20)
-        .attr('dy', 15)
-        .text(`${d.y}`);
+  private onMouseOut(d, tooltip?, tooltipText?, tooltipConfig?) {
+    // hide tooltip
+    if (tooltip) {
+      this.d3Service.hideTooltip(tooltipText, tooltip);
+    }
   }
 
-  private onMouseOut(d, tooltip, tooltipText, tooltipConfig) {
-    this.hideTooltip(tooltipText, tooltip);
-  }
-
-
-
-  private hideTooltip(tooltipText: any, tooltip: any) {
-    tooltipText.selectAll('tspan').remove();
-    tooltip.attr('visibility', 'hidden');
-  }
 
   private changeAxisColor(
       axis: d3.Selection<SVGGElement, unknown, null, undefined>, config: any) {

@@ -116,6 +116,64 @@ export class D3Service {
                   .ticks(xAxisTicks));
   }
 
+  hideTooltip(tooltipText: any, tooltip: any) {
+    tooltipText.selectAll('tspan').remove();
+    tooltip.attr('visibility', 'hidden');
+  }
+
+  showTooltip(
+      d: any, xScale: any, yScale: any, tooltip: any, tooltipRect: any,
+      tooltipText: any, formatTime: any) {
+    const xPos = xScale(d.x) - 150 / 2;
+    const yPos = yScale(d.y) + 10;
+    tooltip.attr('transform', `translate(${xPos}, ${yPos})`)
+        .attr('is', true)
+        .attr('visibility', 'visible');
+    tooltipRect.attr('opacity', 0.7);
+    tooltipText.attr('tranform', 'translate(75,30)')
+        .attr('fill', 'white')
+        .attr('font-size', 10)
+        .attr('font-family', `'Roboto', 'sans-serif'`);
+    tooltipText.append('tspan')
+        .attr('text-anchor', 'middle')
+        .attr('is', true)
+        .attr('x', 25)
+        .attr('y', -5)
+        .text(`${formatTime(d.x)}`);
+    tooltipText.append('tspan')
+        .attr('text-anchor', 'middle')
+        .attr('is', true)
+        .attr('x', 20)
+        .attr('dy', 15)
+        .text(`${d.y}`);
+  }
+
+  addTooltip(container) {
+    const tooltipConfig = {
+      width: 100,
+      height: 40,
+      fill: '#333',
+      opacity: 0.7,
+      rx: 15,
+      text: {
+        translateX: 10,
+        translateY: 20,
+      },
+    };
+    const tooltip =
+        d3.select(container.nativeElement).select('svg').append('g');
+    const tooltipRect = tooltip.append('rect')
+                            .attr('width', tooltipConfig.width)
+                            .attr('height', tooltipConfig.height)
+                            .attr('fill', tooltipConfig.fill)
+                            .attr('opacity', 0)
+                            .attr('rx', tooltipConfig.rx);
+    const tooltipText = tooltip.append('text').attr('transform', `translate(
+          ${tooltipConfig.text.translateX},
+          ${tooltipConfig.text.translateY})`);
+    return {tooltip, tooltipRect, tooltipText, tooltipConfig};
+  }
+
 
 
   // =============
