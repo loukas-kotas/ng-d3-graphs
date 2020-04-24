@@ -8,6 +8,7 @@
   vertical-align: top;
   overflow: hidden;
 }
+
 .svg-content {
   display: inline-block;
   position: absolute;
@@ -17,15 +18,15 @@
 
 // Grid
 .grid line {
-    stroke: lightgrey;
-    stroke-opacity: 0.4;
-    shape-rendering: crispEdges;
-  }
+  stroke: lightgrey;
+  stroke-opacity: 0.4;
+  shape-rendering: crispEdges;
+}
 
 .grid path {
-stroke-width: 0;
+  stroke-width: 0;
 }
 
 .grid text {
-display: none;
+  display: none;
 }
