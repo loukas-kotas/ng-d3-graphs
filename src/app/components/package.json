@@ -24,7 +24,7 @@
     "dest": "dist"
   },
   "scripts": {
-    "release": "node ../../../node_modules/standard-version/bin/cli.js && cp ./CHANGELOG.md ./../../../"
+    "release": "node ../../../node_modules/standard-version/bin/cli.js"
   },
   "private": false,
   "keywords": [
