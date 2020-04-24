@@ -1,5 +1,5 @@
 export const axisConfig = {
-  color: 'grey',
+  color: 'lightgrey',
   opacity: 1,
   rendering: 'crispEdges',
   strokeWidth: '1px',

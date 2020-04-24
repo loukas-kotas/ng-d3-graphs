@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
       labels: lineData.data.map((d) => d.date),
       data: lineData.data.map((d) => d.value),
       options: {
-        height: '300',
+        height: 300,
         gridTicks: 10,
         xAxisLabel: 'Date (days)',
         yAxisLabel: 'Value (Watt)',
@@ -93,7 +93,7 @@ export class AppComponent implements OnInit {
       height: 300,
       yAxisLabel: 'y-band',
       xAxisLabel: 'x-band',
-      gridTicks: 0,
+      gridTicks: 10,
       timeFormat: '%d/%m'
     };
     return {

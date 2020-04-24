@@ -166,13 +166,10 @@ export class LineComponent implements OnInit {
       x: d3.ScaleTime<number, number>, y: d3.ScaleLinear<number, number>) {
     const dotRadius = 3;
     const dotColor = '#4682b4';
-    // const mouseOutDuration = 500;
 
-    // const div = d3.select(this.container.nativeElement)
-    //                 .select('div')
-    //                 .append('div')
-    //                 .attr('class', 'tooltip')
-    //                 .style('opacity', 0);
+    // add tootlip
+    const {tooltip, tooltipRect, tooltipText, tooltipConfig} =
+        this.d3Service.addTooltip(this.container);
 
     svg.selectAll('dot')
         .data(this.labelsAndData)
@@ -185,22 +182,37 @@ export class LineComponent implements OnInit {
             (d) => {
               return x(d.x);
             })
-        .attr('cy', (d) => {
-          return y(d.y);
-        })
-    // .on('mouseover',
-    //     (d) => {
-    //       console.log('on mouseover');
-    //       div.transition().duration(200).style('opacity', .9);
-    //       const formatTime = d3.timeFormat(this.options.timeFormat);
-    //       div.html(formatTime(d.x) + '<br/>' + d.y)
-    //           .style('left', (d3.event.pageX) + 'px')
-    //           .style('top', (d3.event.pageY - 28) + 'px');
-    //     })
-    // .on('mouseout', (d) => {
-    //   div.transition().duration(mouseOutDuration).style('opacity', 0);
-    // });
+        .attr(
+            'cy',
+            (d) => {
+              return y(d.y);
+            })
+        .on('mouseover',
+            (d) => {
+              this.onMouseOver(d, x, y, tooltip, tooltipRect, tooltipText);
+            })
+        .on('mouseout', (d) => {
+          this.onMouseOut(d, tooltip, tooltipText, tooltipConfig);
+        });
   }
+
+  private onMouseOver(d, xScale, yScale, tooltip?, tooltipRect?, tooltipText?) {
+    // show tooltip
+    if (tooltip) {
+      this.d3Service.showTooltip(
+          d, xScale, yScale, tooltip, tooltipRect, tooltipText,
+          this.formatTime);
+    }
+  }
+
+
+  private onMouseOut(d, tooltip?, tooltipText?, tooltipConfig?) {
+    // hide tooltip
+    if (tooltip) {
+      this.d3Service.hideTooltip(tooltipText, tooltip);
+    }
+  }
+
 
   private changeAxisColor(
       axis: d3.Selection<SVGGElement, unknown, null, undefined>, config: any) {
