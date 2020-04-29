@@ -8,9 +8,8 @@ describe('MultiareaComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MultiareaComponent ]
-    })
-    .compileComponents();
+      declarations: [MultiareaComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

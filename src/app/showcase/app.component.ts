@@ -3,12 +3,14 @@ import {GraphOptions} from 'ng-d3-graphs/shared/models/graph-options.interface';
 
 import {BandOptions} from '../components/band/band.component';
 import {BarOptions} from '../components/bar/bar.component';
+import {MultiareaOptions} from '../components/multiarea/multiarea.component';
 import {MultilineOptions} from '../components/multiline/multiline.component';
 
 import * as areaData from './shared/data/area-small';
 import * as bandData from './shared/data/band';
 import * as barData from './shared/data/bar';
 import * as lineData from './shared/data/line';
+import * as multiareaData from './shared/data/multiarea';
 import * as multilineData from './shared/data/multiline';
 
 @Component({
@@ -25,6 +27,7 @@ export class AppComponent implements OnInit {
   area: any;
   band: any;
   multiline: any;
+  multiarea: any;
 
   ngOnInit() {
     this.line = this.getLineData();
@@ -34,6 +37,7 @@ export class AppComponent implements OnInit {
     // this.area = this.getAreaData();
     this.band = this.getBandData();
     this.multiline = this.getMultilineData();
+    this.multiarea = this.getMultiareaData();
   }
 
   getLineData(): any {
@@ -94,7 +98,7 @@ export class AppComponent implements OnInit {
       yAxisLabel: 'y-band',
       xAxisLabel: 'x-band',
       gridTicks: 10,
-      timeFormat: '%d/%m'
+      timeFormat: '%d/%m',
     };
     return {
       labels,
@@ -111,6 +115,35 @@ export class AppComponent implements OnInit {
       yAxisLabel: multilineData.data.y,
       gridTicks: 10,
       xAxisLabel: 'Time',
+      timeFormat: '%d/%m/%Y',
+    };
+    return {
+      labels,
+      data,
+      options,
+    };
+  }
+
+  getMultiareaData(): any {
+    const labels = multiareaData.data.map(d => d.date);
+    const PVkW = multiareaData.data.map(d => d.PVkW);
+    const TBLkW = multiareaData.data.map(d => d.TBLkW);
+    const data: any[] = [
+      {
+        'label': 'PVkW',
+        'values': PVkW,
+      },
+      {
+        'label': 'TBLkW',
+        'values': TBLkW,
+      },
+    ];
+    const options: MultiareaOptions = {
+      height: 300,
+      yAxisLabel: 'Y axis multiarea',
+      gridTicks: 10,
+      xAxisLabel: 'Time',
+      timeParser: '%Y/%m/%d %H:%M',
       timeFormat: '%d/%m/%Y',
     };
     return {

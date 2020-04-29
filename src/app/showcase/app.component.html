@@ -50,6 +50,15 @@
   </div>
 </div>
 
+<div class="container">
+  <div class="line-container">
+    <ng-multiarea [labels]="multiarea.labels" [data]="multiarea.data" [options]="multiarea.options"></ng-multiarea>
+  </div>
+  <div class="line-container">
+    <ng-multiarea [labels]="multiarea.labels" [data]="multiarea.data" [options]="multiarea.options"></ng-multiarea>
+  </div>
+</div>
+
 <div class="solo-container">
   <ng-line [labels]="line.labels" [data]="line.data" [options]="line.options"></ng-line>
 </div>
@@ -71,7 +80,9 @@
   <ng-multiline [labels]="multiline.labels" [data]="multiline.data" [options]="multiline.options"></ng-multiline>
 </div>
 
-
+<div class="solo-container">
+  <ng-multiarea [labels]="multiarea.labels" [data]="multiarea.data" [options]="multiarea.options"></ng-multiarea>
+</div>
 
 <!-- NOTE: comment in when #108 is resolved -->
 <!-- <div class="container">
