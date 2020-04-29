@@ -213,7 +213,7 @@ export class MultiareaComponent implements OnInit {
         x = this.labels[j];
         values.push({ x, y });
       }
-      const newArea = { label: this.data[i].label, values: values };
+      const newArea = { label: this.data[i].label, values };
       result.push(newArea);
     }
 
