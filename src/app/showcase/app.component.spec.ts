@@ -1,6 +1,9 @@
 import {async, TestBed} from '@angular/core/testing';
 import {RouterTestingModule} from '@angular/router/testing';
 import {BandModule, BarModule, LineModule, MultilineModule, PieModule} from 'ng-d3-graphs';
+
+import {MultiareaModule} from '../components/multiarea/multiarea.module';
+
 import {AppComponent} from './app.component';
 
 describe('AppComponent', () => {
@@ -14,6 +17,7 @@ describe('AppComponent', () => {
             MultilineModule,
             PieModule,
             BandModule,
+            MultiareaModule,
           ],
           declarations: [AppComponent],
         })
