@@ -1,10 +1,10 @@
-import {Component, OnInit} from '@angular/core';
-import {GraphOptions} from 'ng-d3-graphs/shared/models/graph-options.interface';
+import { Component, OnInit } from '@angular/core';
+import { GraphOptions } from 'ng-d3-graphs/shared/models/graph-options.interface';
 
-import {BandOptions} from '../components/band/band.component';
-import {BarOptions} from '../components/bar/bar.component';
-import {MultiareaOptions} from '../components/multiarea/multiarea.component';
-import {MultilineOptions} from '../components/multiline/multiline.component';
+import { BandOptions } from '../components/band/band.component';
+import { BarOptions } from '../components/bar/bar.component';
+import { MultiareaOptions } from '../components/multiarea/multiarea.component';
+import { MultilineOptions } from '../components/multiline/multiline.component';
 
 import * as areaData from './shared/data/area-small';
 import * as bandData from './shared/data/band';
@@ -60,7 +60,7 @@ export class AppComponent implements OnInit {
     return {
       labels: ['A', 'B', 'C', 'D'],
       data: [100, 200, 300, 100],
-      options: {width: 300, height: 300, xAxisLabel: 'Pie Axis'},
+      options: { width: 300, height: 300, xAxisLabel: 'Pie Axis' },
       backgroundColors: ['black', 'red', 'yellow', 'green'],
     };
   }
@@ -68,8 +68,7 @@ export class AppComponent implements OnInit {
   getBarData(): any {
     const labels = barData.data.map((d) => d.Run);
     const data = barData.data.map((d) => d.Speed);
-    const options: BarOptions =
-        {height: 300, gridTicks: 0, xAxisLabel: 'bar-x', yAxisLabel: 'bar-y'};
+    const options: BarOptions = { height: 300, gridTicks: 0, xAxisLabel: 'bar-x', yAxisLabel: 'bar-y' };
 
     return {
       labels,
@@ -91,7 +90,7 @@ export class AppComponent implements OnInit {
   getBandData(): any {
     const labels = bandData.data.map((d) => d.date);
     const data = bandData.data.map((d) => {
-      return {high: d.high, low: d.low};
+      return { high: d.high, low: d.low };
     });
     const options: BandOptions = {
       height: 300,
@@ -125,17 +124,17 @@ export class AppComponent implements OnInit {
   }
 
   getMultiareaData(): any {
-    const labels = multiareaData.data.map(d => d.date);
-    const PVkW = multiareaData.data.map(d => d.PVkW);
-    const TBLkW = multiareaData.data.map(d => d.TBLkW);
+    const labels = multiareaData.data.map((d) => d.date);
+    const PVkW = multiareaData.data.map((d) => d.PVkW);
+    const TBLkW = multiareaData.data.map((d) => d.TBLkW);
     const data: any[] = [
       {
-        'label': 'PVkW',
-        'values': PVkW,
+        label: 'PVkW',
+        values: PVkW,
       },
       {
-        'label': 'TBLkW',
-        'values': TBLkW,
+        label: 'TBLkW',
+        values: TBLkW,
       },
     ];
     const options: MultiareaOptions = {

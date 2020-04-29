@@ -1,27 +1,17 @@
-import {async, TestBed} from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-import {BandModule, BarModule, LineModule, MultilineModule, PieModule} from 'ng-d3-graphs';
+import { async, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { BandModule, BarModule, LineModule, MultilineModule, PieModule } from 'ng-d3-graphs';
 
-import {MultiareaModule} from '../components/multiarea/multiarea.module';
+import { MultiareaModule } from '../components/multiarea/multiarea.module';
 
-import {AppComponent} from './app.component';
+import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
-    TestBed
-        .configureTestingModule({
-          imports: [
-            RouterTestingModule,
-            LineModule,
-            BarModule,
-            MultilineModule,
-            PieModule,
-            BandModule,
-            MultiareaModule,
-          ],
-          declarations: [AppComponent],
-        })
-        .compileComponents();
+    TestBed.configureTestingModule({
+      imports: [RouterTestingModule, LineModule, BarModule, MultilineModule, PieModule, BandModule, MultiareaModule],
+      declarations: [AppComponent],
+    }).compileComponents();
   }));
 
   it('should create the app', () => {
@@ -40,7 +30,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.content span').textContent)
-        .toContain('ng-d3-graphs app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('ng-d3-graphs app is running!');
   });
 });
