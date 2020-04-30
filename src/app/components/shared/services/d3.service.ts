@@ -59,7 +59,7 @@ export class D3Service {
   }
 
   addLabelAxisY(
-      svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number,
+      svg: d3.Selection<SVGElement, unknown, null, undefined>, height: number,
       options: any) {
     svg.append('text')
         .attr('transform', 'rotate(-90)')
@@ -71,7 +71,7 @@ export class D3Service {
   }
 
   addLabelAxisX(
-      svg: d3.Selection<SVGGElement, unknown, null, undefined>, width: number,
+      svg: d3.Selection<SVGElement, unknown, null, undefined>, width: number,
       height: number, options: any) {
     svg.append('text')
         .attr(
@@ -93,12 +93,12 @@ export class D3Service {
     return res;
   }
 
-  removeAxisTicks(axis: d3.Selection<SVGGElement, unknown, null, undefined>) {
+  removeAxisTicks(axis: d3.Selection<SVGElement, unknown, null, undefined>) {
     axis.selectAll('.tick').selectAll('line').remove();
   }
 
   changeAxisColor(
-      axis: d3.Selection<SVGGElement, unknown, null, undefined>, config: any) {
+      axis: d3.Selection<SVGElement, unknown, null, undefined>, config: any) {
     axis.select('path')
         .attr('color', config.color)
         .attr('opacity', config.opacity)
@@ -107,7 +107,7 @@ export class D3Service {
   }
 
   getXaxisTime(
-      svg: d3.Selection<SVGGElement, unknown, null, undefined>, height: number,
+      svg: d3.Selection<SVGElement, unknown, null, undefined>, height: number,
       x: d3.ScaleTime<number, number>, timeFormat: string, xAxisTicks: number) {
     return svg.append('g')
         .attr('transform', `translate(0,${height})`)
@@ -174,7 +174,61 @@ export class D3Service {
     return {tooltip, tooltipRect, tooltipText, tooltipConfig};
   }
 
+  getLegend(
+      svg: d3.Selection<SVGElement, unknown, null, undefined>, width: number,
+      height: number, colorScale: any, labels: string[], fontSize: string,
+      legendWidth: string, legendHeight: string,
+      legendBackground: string): void {
+    const legend = svg.append('g')
+                       .attr('class', 'legend')
+                       .attr('transform', `translate(${width}, ${height})`);
 
+    legend.append('rect')
+        .attr('width', legendWidth)
+        .attr('height', legendHeight)
+        .attr('background', legendBackground);
+
+    // Add one dot in the legend for each name.
+    legend.selectAll('dots')
+        .data(labels)
+        .enter()
+        .append('circle')
+        .attr('cx', 100)
+        .attr(
+            'cy',
+            (d, i) => {
+              return i * 20;
+            })  // 100 is where the first dot appears. 25 is
+        // the distance between dots
+        .attr('r', 5)
+        .style('fill', (d) => {
+          return colorScale(d);
+        });
+
+    // Add one dot in the legend for each name.
+    legend.selectAll('labels')
+        .data(labels)
+        .enter()
+        .append('text')
+        .attr('x', 120)
+        .attr(
+            'y',
+            (d, i) => {
+              return i * 25;
+            })  // 100 is where the first dot appears. 25 is
+        // the distance between dots
+        .style(
+            'fill',
+            (d) => {
+              return colorScale(d);
+            })
+        .text((d) => {
+          return d;
+        })
+        .attr('text-anchor', 'left')
+        .style('alignment-baseline', 'middle')
+        .attr('font-size', `${fontSize}`);
+  }
 
   // =============
 }
