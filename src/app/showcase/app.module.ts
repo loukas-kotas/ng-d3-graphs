@@ -1,18 +1,18 @@
-import {CUSTOM_ELEMENTS_SCHEMA, NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-import {LineModule} from 'ng-d3-graphs';
-import {BarModule} from 'ng-d3-graphs';
-import {PieModule} from 'ng-d3-graphs';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { LineModule } from 'ng-d3-graphs';
+import { BarModule } from 'ng-d3-graphs';
+import { PieModule } from 'ng-d3-graphs';
 // import { AreaModule } from 'ng-d3-graphs'; TODO: comment in when issue #96 is
 // done.
-import {BandModule} from 'ng-d3-graphs';
-import {MultilineModule} from 'ng-d3-graphs';
+import { BandModule } from 'ng-d3-graphs';
+import { MultilineModule } from 'ng-d3-graphs';
 
-import {MultiareaModule} from '../components/multiarea/multiarea.module';
-import {ScatterModule} from '../components/scatter/scatter.module';
+import { MultiareaModule } from '../components/multiarea/multiarea.module';
+import { ScatterModule } from '../components/scatter/scatter.module';
 
-import {AppRoutingModule} from './app-routing.module';
-import {AppComponent} from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,5 +32,4 @@ import {AppComponent} from './app.component';
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class AppModule {
-}
+export class AppModule {}

@@ -1,16 +1,11 @@
-import {CommonModule} from '@angular/common';
-import {NgModule} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 
-import {ScatterComponent} from './scatter.component';
-
-
+import { ScatterComponent } from './scatter.component';
 
 @NgModule({
   declarations: [ScatterComponent],
   imports: [CommonModule],
-  exports: [
-    ScatterComponent,
-  ]
+  exports: [ScatterComponent],
 })
-export class ScatterModule {
-}
+export class ScatterModule {}
