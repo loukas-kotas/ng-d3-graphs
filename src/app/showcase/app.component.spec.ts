@@ -3,13 +3,23 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { BandModule, BarModule, LineModule, MultilineModule, PieModule } from 'ng-d3-graphs';
 
 import { MultiareaModule } from '../components/multiarea/multiarea.module';
+import { ScatterModule } from '../components/scatter/scatter.module';
 
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, LineModule, BarModule, MultilineModule, PieModule, BandModule, MultiareaModule],
+      imports: [
+        RouterTestingModule,
+        LineModule,
+        BarModule,
+        MultilineModule,
+        PieModule,
+        BandModule,
+        MultiareaModule,
+        ScatterModule,
+      ],
       declarations: [AppComponent],
     }).compileComponents();
   }));
