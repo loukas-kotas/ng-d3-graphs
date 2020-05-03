@@ -5,6 +5,7 @@ import {BandOptions} from '../components/band/band.component';
 import {BarOptions} from '../components/bar/bar.component';
 import {MultiareaOptions} from '../components/multiarea/multiarea.component';
 import {MultilineOptions} from '../components/multiline/multiline.component';
+import {ScatterOptions} from '../components/scatter/scatter.component';
 
 import * as areaData from './shared/data/area-small';
 import * as bandData from './shared/data/band';
@@ -12,6 +13,7 @@ import * as barData from './shared/data/bar';
 import * as lineData from './shared/data/line';
 import * as multiareaData from './shared/data/multiarea';
 import * as multilineData from './shared/data/multiline';
+import * as scatterData from './shared/data/scatter';
 
 @Component({
   selector: 'ng-root',
@@ -28,6 +30,7 @@ export class AppComponent implements OnInit {
   band: any;
   multiline: any;
   multiarea: any;
+  scatter: any;
 
   ngOnInit() {
     this.line = this.getLineData();
@@ -38,6 +41,7 @@ export class AppComponent implements OnInit {
     this.band = this.getBandData();
     this.multiline = this.getMultilineData();
     this.multiarea = this.getMultiareaData();
+    this.scatter = this.getScatterData();
   }
 
   getLineData(): any {
@@ -152,5 +156,30 @@ export class AppComponent implements OnInit {
       data,
       options,
     };
+  }
+
+  getScatterData(): any {
+    const labels = scatterData.data.map(d => d.name);
+    const data = scatterData.data.map(d => {
+      return {
+        x: d.x, y: d.y
+      }
+    });
+
+
+    const options: ScatterOptions = {
+      height: 300,
+      yAxisLabel: 'Y axis scatter',
+      gridTicks: 10,
+      xAxisLabel: 'Time',
+      timeParser: '',
+      timeFormat: '',
+      legend: false,
+      xAxisTicks: 10,
+    }
+
+    return {
+      labels, data, options,
+    }
   }
 }

@@ -116,6 +116,23 @@ export class D3Service {
                   .ticks(xAxisTicks));
   }
 
+  getXaxisOrdinal(
+      svg: d3.Selection<SVGElement, unknown, null, undefined>, height: number,
+      x: d3.ScaleOrdinal<any, any>, xAxisTicks: number) {
+    return svg.append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(x).ticks(xAxisTicks));
+  }
+
+  getXaxisLinear(
+      svg: d3.Selection<SVGElement, unknown, null, undefined>, height: number,
+      x: d3.ScaleLinear<number, number>, xAxisTicks: number) {
+    return svg.append('g')
+        .attr('transform', `translate(0,${height})`)
+        .call(d3.axisBottom(x).ticks(xAxisTicks));
+  }
+
+
   hideTooltip(tooltipText: any, tooltip: any) {
     tooltipText.selectAll('tspan').remove();
     tooltip.attr('visibility', 'hidden');
