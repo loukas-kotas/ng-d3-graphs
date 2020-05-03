@@ -9,6 +9,7 @@ import { BandModule } from 'ng-d3-graphs';
 import { MultilineModule } from 'ng-d3-graphs';
 
 import { MultiareaModule } from '../components/multiarea/multiarea.module';
+import { ScatterModule } from '../components/scatter/scatter.module';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,6 +26,7 @@ import { AppComponent } from './app.component';
     BandModule,
     MultilineModule,
     MultiareaModule,
+    ScatterModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

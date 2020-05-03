@@ -1,6 +1,6 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
-import {ViewBox} from '../models/viewbox.interface';
+import { ViewBox } from '../models/viewbox.interface';
 
 export enum AxisDirection {
   top = 'top',
@@ -8,7 +8,7 @@ export enum AxisDirection {
   bottom = 'bottom',
   left = 'left',
 }
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class D3Service {
   constructor() {}
 
@@ -32,20 +32,25 @@ export class D3Service {
   }
 
   factoryLine(): any {
-    return d3.line<any>().x((d) => d.x).y((d) => d.y);
+    return d3
+      .line<any>()
+      .x((d) => d.x)
+      .y((d) => d.y);
   }
 
   // ==== Axis =====
   scaleLinearX(labels: any[], width: number) {
-    return d3.scaleLinear()
-        .domain(d3.extent(labels))  // does the magic for adjustable axis
-        .range([0, width]);
+    return d3
+      .scaleLinear()
+      .domain(d3.extent(labels)) // does the magic for adjustable axis
+      .range([0, width]);
   }
 
   scaleLinearY(data: any[], height: number) {
-    return d3.scaleLinear()
-        .domain(d3.extent(data))  // does the magic for adjustable axis
-        .range([height, 0]);
+    return d3
+      .scaleLinear()
+      .domain(d3.extent(data)) // does the magic for adjustable axis
+      .range([height, 0]);
   }
 
   scaleBandX(labels: any[], width: number) {
@@ -53,33 +58,29 @@ export class D3Service {
   }
 
   scaleLinearYRangeRound(data: any[], height: number) {
-    return d3.scaleLinear().domain([0, Math.max(...data)]).rangeRound([
-      height, 0
-    ]);
+    return d3
+      .scaleLinear()
+      .domain([0, Math.max(...data)])
+      .rangeRound([height, 0]);
   }
 
-  addLabelAxisY(
-      svg: d3.Selection<SVGElement, unknown, null, undefined>, height: number,
-      options: any) {
-    svg.append('text')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', 0 - options.margin.left)
-        .attr('x', 0 - height / 2)
-        .attr('dy', '1em')
-        .style('text-anchor', 'middle')
-        .text(options.yAxisLabel);
+  addLabelAxisY(svg: d3.Selection<SVGElement, unknown, null, undefined>, height: number, options: any) {
+    svg
+      .append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 0 - options.margin.left)
+      .attr('x', 0 - height / 2)
+      .attr('dy', '1em')
+      .style('text-anchor', 'middle')
+      .text(options.yAxisLabel);
   }
 
-  addLabelAxisX(
-      svg: d3.Selection<SVGElement, unknown, null, undefined>, width: number,
-      height: number, options: any) {
-    svg.append('text')
-        .attr(
-            'transform',
-            'translate(' + width / 2 + ' ,' + (height + options.margin.top) +
-                ')')
-        .style('text-anchor', 'middle')
-        .text(options.xAxisLabel);
+  addLabelAxisX(svg: d3.Selection<SVGElement, unknown, null, undefined>, width: number, height: number, options: any) {
+    svg
+      .append('text')
+      .attr('transform', 'translate(' + width / 2 + ' ,' + (height + options.margin.top) + ')')
+      .style('text-anchor', 'middle')
+      .text(options.xAxisLabel);
   }
 
   getViewBoxDefault(options: any): ViewBox {
@@ -97,23 +98,44 @@ export class D3Service {
     axis.selectAll('.tick').selectAll('line').remove();
   }
 
-  changeAxisColor(
-      axis: d3.Selection<SVGElement, unknown, null, undefined>, config: any) {
-    axis.select('path')
-        .attr('color', config.color)
-        .attr('opacity', config.opacity)
-        .attr('rendering', config.rendering)
-        .attr('stroke-width', config.strokeWidth);
+  changeAxisColor(axis: d3.Selection<SVGElement, unknown, null, undefined>, config: any) {
+    axis
+      .select('path')
+      .attr('color', config.color)
+      .attr('opacity', config.opacity)
+      .attr('rendering', config.rendering)
+      .attr('stroke-width', config.strokeWidth);
   }
 
   getXaxisTime(
-      svg: d3.Selection<SVGElement, unknown, null, undefined>, height: number,
-      x: d3.ScaleTime<number, number>, timeFormat: string, xAxisTicks: number) {
-    return svg.append('g')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x)
-                  .tickFormat(d3.timeFormat(timeFormat))
-                  .ticks(xAxisTicks));
+    svg: d3.Selection<SVGElement, unknown, null, undefined>,
+    height: number,
+    x: d3.ScaleTime<number, number>,
+    timeFormat: string,
+    xAxisTicks: number
+  ) {
+    return svg
+      .append('g')
+      .attr('transform', `translate(0,${height})`)
+      .call(d3.axisBottom(x).tickFormat(d3.timeFormat(timeFormat)).ticks(xAxisTicks));
+  }
+
+  getXaxisOrdinal(
+    svg: d3.Selection<SVGElement, unknown, null, undefined>,
+    height: number,
+    x: d3.ScaleOrdinal<any, any>,
+    xAxisTicks: number
+  ) {
+    return svg.append('g').attr('transform', `translate(0,${height})`).call(d3.axisBottom(x).ticks(xAxisTicks));
+  }
+
+  getXaxisLinear(
+    svg: d3.Selection<SVGElement, unknown, null, undefined>,
+    height: number,
+    x: d3.ScaleLinear<number, number>,
+    xAxisTicks: number
+  ) {
+    return svg.append('g').attr('transform', `translate(0,${height})`).call(d3.axisBottom(x).ticks(xAxisTicks));
   }
 
   hideTooltip(tooltipText: any, tooltip: any) {
@@ -121,31 +143,30 @@ export class D3Service {
     tooltip.attr('visibility', 'hidden');
   }
 
-  showTooltip(
-      d: any, xScale: any, yScale: any, tooltip: any, tooltipRect: any,
-      tooltipText: any, formatTime: any) {
+  showTooltip(d: any, xScale: any, yScale: any, tooltip: any, tooltipRect: any, tooltipText: any, formatTime: any) {
     const xPos = xScale(d.x) - 150 / 2;
     const yPos = yScale(d.y) + 10;
-    tooltip.attr('transform', `translate(${xPos}, ${yPos})`)
-        .attr('is', true)
-        .attr('visibility', 'visible');
+    tooltip.attr('transform', `translate(${xPos}, ${yPos})`).attr('is', true).attr('visibility', 'visible');
     tooltipRect.attr('opacity', 0.7);
-    tooltipText.attr('tranform', 'translate(75,30)')
-        .attr('fill', 'white')
-        .attr('font-size', 10)
-        .attr('font-family', `'Roboto', 'sans-serif'`);
-    tooltipText.append('tspan')
-        .attr('text-anchor', 'middle')
-        .attr('is', true)
-        .attr('x', 25)
-        .attr('y', -5)
-        .text(`${formatTime(d.x)}`);
-    tooltipText.append('tspan')
-        .attr('text-anchor', 'middle')
-        .attr('is', true)
-        .attr('x', 20)
-        .attr('dy', 15)
-        .text(`${d.y}`);
+    tooltipText
+      .attr('tranform', 'translate(75,30)')
+      .attr('fill', 'white')
+      .attr('font-size', 10)
+      .attr('font-family', `'Roboto', 'sans-serif'`);
+    tooltipText
+      .append('tspan')
+      .attr('text-anchor', 'middle')
+      .attr('is', true)
+      .attr('x', 25)
+      .attr('y', -5)
+      .text(`${formatTime(d.x)}`);
+    tooltipText
+      .append('tspan')
+      .attr('text-anchor', 'middle')
+      .attr('is', true)
+      .attr('x', 20)
+      .attr('dy', 15)
+      .text(`${d.y}`);
   }
 
   addTooltip(container) {
@@ -160,74 +181,74 @@ export class D3Service {
         translateY: 20,
       },
     };
-    const tooltip =
-        d3.select(container.nativeElement).select('svg').append('g');
-    const tooltipRect = tooltip.append('rect')
-                            .attr('width', tooltipConfig.width)
-                            .attr('height', tooltipConfig.height)
-                            .attr('fill', tooltipConfig.fill)
-                            .attr('opacity', 0)
-                            .attr('rx', tooltipConfig.rx);
-    const tooltipText = tooltip.append('text').attr('transform', `translate(
+    const tooltip = d3.select(container.nativeElement).select('svg').append('g');
+    const tooltipRect = tooltip
+      .append('rect')
+      .attr('width', tooltipConfig.width)
+      .attr('height', tooltipConfig.height)
+      .attr('fill', tooltipConfig.fill)
+      .attr('opacity', 0)
+      .attr('rx', tooltipConfig.rx);
+    const tooltipText = tooltip.append('text').attr(
+      'transform',
+      `translate(
           ${tooltipConfig.text.translateX},
-          ${tooltipConfig.text.translateY})`);
-    return {tooltip, tooltipRect, tooltipText, tooltipConfig};
+          ${tooltipConfig.text.translateY})`
+    );
+    return { tooltip, tooltipRect, tooltipText, tooltipConfig };
   }
 
   getLegend(
-      svg: d3.Selection<SVGElement, unknown, null, undefined>, width: number,
-      height: number, colorScale: any, labels: string[], fontSize: string,
-      legendWidth: string, legendHeight: string,
-      legendBackground: string): void {
-    const legend = svg.append('g')
-                       .attr('class', 'legend')
-                       .attr('transform', `translate(${width}, ${height})`);
+    svg: d3.Selection<SVGElement, unknown, null, undefined>,
+    width: number,
+    height: number,
+    colorScale: any,
+    labels: string[],
+    fontSize: string,
+    legendWidth: string,
+    legendHeight: string,
+    legendBackground: string
+  ): void {
+    const legend = svg.append('g').attr('class', 'legend').attr('transform', `translate(${width}, ${height})`);
 
-    legend.append('rect')
-        .attr('width', legendWidth)
-        .attr('height', legendHeight)
-        .attr('background', legendBackground);
-
-    // Add one dot in the legend for each name.
-    legend.selectAll('dots')
-        .data(labels)
-        .enter()
-        .append('circle')
-        .attr('cx', 100)
-        .attr(
-            'cy',
-            (d, i) => {
-              return i * 20;
-            })  // 100 is where the first dot appears. 25 is
-        // the distance between dots
-        .attr('r', 5)
-        .style('fill', (d) => {
-          return colorScale(d);
-        });
+    legend.append('rect').attr('width', legendWidth).attr('height', legendHeight).attr('background', legendBackground);
 
     // Add one dot in the legend for each name.
-    legend.selectAll('labels')
-        .data(labels)
-        .enter()
-        .append('text')
-        .attr('x', 120)
-        .attr(
-            'y',
-            (d, i) => {
-              return i * 25;
-            })  // 100 is where the first dot appears. 25 is
-        // the distance between dots
-        .style(
-            'fill',
-            (d) => {
-              return colorScale(d);
-            })
-        .text((d) => {
-          return d;
-        })
-        .attr('text-anchor', 'left')
-        .style('alignment-baseline', 'middle')
-        .attr('font-size', `${fontSize}`);
+    legend
+      .selectAll('dots')
+      .data(labels)
+      .enter()
+      .append('circle')
+      .attr('cx', 100)
+      .attr('cy', (d, i) => {
+        return i * 20;
+      }) // 100 is where the first dot appears. 25 is
+      // the distance between dots
+      .attr('r', 5)
+      .style('fill', (d) => {
+        return colorScale(d);
+      });
+
+    // Add one dot in the legend for each name.
+    legend
+      .selectAll('labels')
+      .data(labels)
+      .enter()
+      .append('text')
+      .attr('x', 120)
+      .attr('y', (d, i) => {
+        return i * 25;
+      }) // 100 is where the first dot appears. 25 is
+      // the distance between dots
+      .style('fill', (d) => {
+        return colorScale(d);
+      })
+      .text((d) => {
+        return d;
+      })
+      .attr('text-anchor', 'left')
+      .style('alignment-baseline', 'middle')
+      .attr('font-size', `${fontSize}`);
   }
 
   // =============
