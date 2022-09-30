@@ -57,7 +57,7 @@
     "@types/node": "~8.9.4",
     "codelyzer": "^5.0.0",
     "cz-conventional-changelog": "^3.1.0",
-    "d3": "^5.15.0",
+    "d3": "^7.6.1",
     "docsify": "^4.11.3",
     "husky": "^4.2.5",
     "jasmine-core": "~3.4.0",
